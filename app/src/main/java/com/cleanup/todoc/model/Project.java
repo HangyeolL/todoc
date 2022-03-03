@@ -41,39 +41,6 @@ public class Project {
         this.color = color;
     }
 
-// I do this in ProjectDao
-//    /**
-//     * Returns all the projects of the application.
-//     *
-//     * @return all the projects of the application
-//     */
-//    @NonNull
-//    public static Project[] getAllProjects() {
-//        return new Project[]{
-//                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-//                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-//                new Project(3L, "Projet Circus", 0xFFA3CED2),
-//        };
-//    }
-
-
-// I dont need cause I do this by ProjectDao
-//    /**
-//     * Returns the project with the given unique identifier, or null if no project with that
-//     * identifier can be found.
-//     *
-//     * @param id the unique identifier of the project to return
-//     * @return the project with the given unique identifier, or null if it has not been found
-//     */
-//    @Nullable
-//    public static Project getProjectById(long id) {
-//        for (Project project : getAllProjects()) {
-//            if (project.id == id)
-//                return project;
-//        }
-//        return null;
-//    }
-
     /**
      * Returns the unique identifier of the project.
      *

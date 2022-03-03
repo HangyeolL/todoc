@@ -15,6 +15,7 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Adapter which handles the list of tasks to display in the dedicated RecyclerView.</p>
@@ -28,6 +29,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @NonNull
     private List<Task> tasks;
 
+    private List<Project> mProjects;
     /**
      * The listener for when a task needs to be deleted
      */
@@ -39,8 +41,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
-    TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener) {
+    TasksAdapter(@NonNull final List<Task> tasks, List<Project> projects, @NonNull final DeleteTaskListener deleteTaskListener) {
         this.tasks = tasks;
+        mProjects = projects;
         this.deleteTaskListener = deleteTaskListener;
     }
 
@@ -49,7 +52,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of tasks the adapter deals with to set
      */
-    void updateTasks(@NonNull final List<Task> tasks) {
+    public void updateTasks(@NonNull final List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
@@ -77,15 +80,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public interface DeleteTaskListener {
         /**
          * Called when a task needs to be deleted.
-         *
-         * @param task the task that needs to be deleted
+         * @param task
          */
         void onDeleteTask(Task task);
     }
 
     /**
      * <p>ViewHolder for task items in the tasks list</p>
-     *
      * @author Gaëtan HERFRAY
      */
     class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -143,14 +144,19 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         /**
          * Binds a task to the item view.
-         *
-         * @param task the task to bind in the item view
+         * @param task
          */
         void bind(Task task) {
             lblTaskName.setText(task.getName());
             imgDelete.setTag(task);
 
-            final Project taskProject = task.getProject();
+            Project taskProject = null;
+                for (Project mProject : mProjects) {
+                    if(mProject.getId() == task.getProjectId()) {
+                        taskProject = mProject;
+                    }
+                }
+
             if (taskProject != null) {
                 imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
                 lblProjectName.setText(taskProject.getName());
