@@ -19,12 +19,13 @@ public interface TaskDao {
     @Update
     void updateTask(Task task);
 
-    @Query("DELETE FROM task WHERE id = :taskId")
+    @Query("DELETE FROM Task WHERE id = :taskId")
     void deleteTaskById(long taskId);
 
-    @Query("DELETE FROM task")
+    @Query("DELETE FROM Task")
     void deleteAllTasks();
 
-    @Query("SELECT * FROM task ORDER BY creationTimestamp DESC")
+    // Mentor took out order by creationTimestamp
+    @Query("SELECT * FROM Task ORDER BY creationTimestamp DESC")
     LiveData<List<Task>> getAllTasks();
 }

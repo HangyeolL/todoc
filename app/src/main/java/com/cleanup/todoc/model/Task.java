@@ -2,15 +2,9 @@ package com.cleanup.todoc.model;
 
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-
-import com.cleanup.todoc.database.dao.ProjectDao;
-
-import java.util.Comparator;
 
 /**
  * <p>Model for the tasks of the application.</p>

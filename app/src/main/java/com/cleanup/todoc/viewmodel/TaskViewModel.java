@@ -1,5 +1,8 @@
 package com.cleanup.todoc.viewmodel;
 
+
+import static com.cleanup.todoc.ui.MainActivity.SortMethod;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -7,17 +10,21 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
+import com.cleanup.todoc.utils.TaskComparator;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class TaskViewModel extends ViewModel {
 
-    private ProjectRepository mProjectRepository;
-    private TaskRepository mTaskRepository;
+    private final ProjectRepository mProjectRepository;
+    private final TaskRepository mTaskRepository;
+    private final Executor mExecutor;
 
-    private LiveData<List<Task>> mTaskList;
+    private List<Project> mProjects;
+    private List<Task> mTasks;
 
     /**
      * Constructor
@@ -25,96 +32,71 @@ public class TaskViewModel extends ViewModel {
     public TaskViewModel(ProjectRepository projectRepository, TaskRepository taskRepository) {
         mProjectRepository = projectRepository;
         mTaskRepository = taskRepository;
+        mExecutor = Executors.newFixedThreadPool(2);
+
     }
-//  I dont think I need to do this
-//    public void init() {
-//        if (mTaskList != null) {
-//            return;
-//        }
-//        mTaskList = mTaskRepository.getAllTasks();
-//    }
+
+    /**
+     * Sorting List of Tasks according to Enum
+     */
+    public List<Task> sortTask(SortMethod sortOption, List<Task> tasks) {
+        switch (sortOption) {
+            case ALPHABETICAL:
+                Collections.sort(tasks, new TaskComparator.TaskAZComparator());
+                break;
+            case ALPHABETICAL_INVERTED:
+                Collections.sort(tasks, new TaskComparator.TaskZAComparator());
+                break;
+            case RECENT_FIRST:
+                Collections.sort(tasks, new TaskComparator.TaskRecentComparator());
+                break;
+            case OLD_FIRST:
+                Collections.sort(tasks, new TaskComparator.TaskOldComparator());
+                break;
+        }
+        return tasks;
+    }
 
     /**
      * Project Methods
      */
+//    public void updateProjects(List<Project> projects) {
+//        mProjects = projects;
+//    }
+
     public Project getProject(long id) {
         return mProjectRepository.getProject(id);
     }
 
-    public List<Project> getAllProject() {
-        List<Project> mProjectList;
-        Executors.newSingleThreadExecutor().execute(() -> {
-            mProjectList = mProjectRepository.getAllProject();
-        });
-        return mProjectList;
+    public LiveData<List<Project>> getAllProject() {
+        return mProjectRepository.getAllProject();
     }
 
     /**
      * Task methods
      */
 
+//    public void updateTaskList(List<Task> tasks) {
+//        mTasks = tasks;
+//    }
+
     public void insertTask(Task task) {
-//        Executors.newSingleThreadExecutor().execute(() -> mTaskRepository.insertTask(task));
-        mTaskRepository.insertTask(task);
+        mExecutor.execute(() -> mTaskRepository.insertTask(task));
     }
 
     public void updateTask(Task task) {
-//        Executors.newSingleThreadExecutor().execute(() -> mTaskRepository.updateTask(task));
-        mTaskRepository.updateTask(task);
+        mExecutor.execute(() -> mTaskRepository.updateTask(task));
     }
 
     public void deleteTaskById(long taskId) {
-//        Executors.newSingleThreadExecutor().execute(() -> mTaskRepository.deleteTaskById(taskId));
-        mTaskRepository.deleteTaskById(taskId);
+        mExecutor.execute(() -> mTaskRepository.deleteTaskById(taskId));
     }
 
     public void deleteAllTasks() {
-//        Executors.newSingleThreadExecutor().execute(() -> mTaskRepository.deleteAllTasks());
-        mTaskRepository.deleteAllTasks();
+        mExecutor.execute(() -> mTaskRepository.deleteAllTasks());
     }
 
     public LiveData<List<Task>> getAllTasks() {
-//        return mTaskList;
         return mTaskRepository.getAllTasks();
-    }
-
-    /**
-     * Comparator to sort task from A to Z
-     */
-    public static class TaskAZComparator implements Comparator<Task> {
-        @Override
-        public int compare(Task left, Task right) {
-            return left.getName().compareTo(right.getName());
-        }
-    }
-
-    /**
-     * Comparator to sort task from Z to A
-     */
-    public static class TaskZAComparator implements Comparator<Task> {
-        @Override
-        public int compare(Task left, Task right) {
-            return right.getName().compareTo(left.getName());
-        }
-    }
-
-    /**
-     * Comparator to sort task from last created to first created
-     */
-    public static class TaskRecentComparator implements Comparator<Task> {
-        @Override
-        public int compare(Task left, Task right) {
-            return (int) (right.getCreationTimestamp() - left.getCreationTimestamp());
-        }
-    }
-
-    /**
-     * Comparator to sort task from first created to last created
-     */
-    public static class TaskOldComparator implements Comparator<Task> {
-        @Override
-        public int compare(Task left, Task right) {
-            return (int) (left.getCreationTimestamp() - right.getCreationTimestamp());
-        }
     }
 }

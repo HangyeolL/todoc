@@ -7,11 +7,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.cleanup.todoc.database.TodocDatabase;
-import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
-
-import java.util.concurrent.Executors;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -22,6 +19,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     /**
      * Singleton
+     * instantiate ViewModelFactory with things inside constructors
      */
     public static ViewModelFactory getInstance(Context context) {
 
@@ -40,7 +38,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private ViewModelFactory(Context context) {
         TodocDatabase database = TodocDatabase.getInstance(context);
         mProjectRepository = new ProjectRepository(database.mProjectDao());
-        mTaskRepository = new TaskRepository(database.mTaskDaoDao());
+        mTaskRepository = new TaskRepository(database.mTaskDao());
     }
 
     @NonNull

@@ -23,7 +23,7 @@ public abstract class TodocDatabase extends RoomDatabase {
     private static volatile TodocDatabase INSTANCE;
     // --- DAO ---
     public abstract ProjectDao mProjectDao();
-    public abstract TaskDao mTaskDaoDao();
+    public abstract TaskDao mTaskDao();
     // --- INSTANCE ---
     public static TodocDatabase getInstance(Context context) {
         if (INSTANCE == null) {
@@ -38,9 +38,9 @@ public abstract class TodocDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    private static RoomDatabase.Callback prepopulateDatabase() {
+    private static Callback prepopulateDatabase() {
 
-        return new RoomDatabase.Callback() {
+        return new Callback() {
             @Override
             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                 super.onCreate(db);

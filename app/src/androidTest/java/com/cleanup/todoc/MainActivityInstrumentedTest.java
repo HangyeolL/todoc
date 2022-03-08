@@ -1,4 +1,4 @@
-package com.cleanup.todoc;
+//package com.cleanup.todoc;
 //
 //import android.support.test.rule.ActivityTestRule;
 //import android.support.test.runner.AndroidJUnit4;
@@ -21,19 +21,28 @@ package com.cleanup.todoc;
 //import static com.cleanup.todoc.TestUtils.withRecyclerView;
 //import static org.hamcrest.Matchers.equalTo;
 //import static org.junit.Assert.assertThat;
-
-import androidx.test.runner.AndroidJUnit4;
-
-import org.junit.runner.RunWith;
-
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * @author Gaëtan HERFRAY
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-@RunWith(AndroidJUnit4.class)
-public class MainActivityInstrumentedTest {
+//
+//import android.view.View;
+//import android.widget.TextView;
+//
+//import androidx.recyclerview.widget.RecyclerView;
+//import androidx.test.rule.ActivityTestRule;
+//import androidx.test.runner.AndroidJUnit4;
+//
+//import com.cleanup.todoc.ui.MainActivity;
+//
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//
+///**
+// * Instrumented test, which will execute on an Android device.
+// *
+// * @author Gaëtan HERFRAY
+// * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+// */
+//@RunWith(AndroidJUnit4.class)
+//public class MainActivityInstrumentedTest {
 //    @Rule
 //    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
 //
@@ -123,4 +132,4 @@ public class MainActivityInstrumentedTest {
 //        onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
 //                .check(matches(withText("aaa Tâche example")));
 //    }
-}
+//}

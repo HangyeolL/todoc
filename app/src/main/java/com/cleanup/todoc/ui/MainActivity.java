@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,8 +26,6 @@ import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.viewmodel.TaskViewModel;
 import com.cleanup.todoc.viewmodel.ViewModelFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,13 +36,9 @@ import java.util.List;
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
-    /**
-     * List of all current tasks of the application
-     */
-    @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
 
-    private List<Project> mProjects;
+    private List<Project> mProjectList;
+    private List<Task> mTaskList;
     /**
      * The adapter which handles the list of tasks
      */
@@ -107,13 +100,22 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         configureViewModel();
         configureRecyclerView();
 
+
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showAddTaskDialog();
             }
         });
+    }
+    /**
+     * RecyclerView Configuration
+     */
 
+    private void configureRecyclerView() {
+        adapter = new TasksAdapter(this);
+        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        listTasks.setAdapter(adapter);
     }
 
     /**
@@ -121,28 +123,27 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
 
     public void configureViewModel() {
-//        mTaskViewModel = new ViewModelFactory(this).create(); why not doing this
-        mTaskViewModel = new ViewModelProvider(this,ViewModelFactory.getInstance(this)).get(TaskViewModel.class);
+        mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(TaskViewModel.class);
 
-        mProjects = mTaskViewModel.getAllProject();
-        mTaskViewModel.getAllTasks();
+//        Instead of doing this :
+//        List<Task> mTaskList = mTaskViewModel.getAllTasks();
+//        List<Project> mProjectList = mTaskViewModel.getAllProject();
+//        With ViewModel we do like this :
+        mTaskViewModel.getAllProject().observe(this, new Observer<List<Project>>() {
+            @Override
+            public void onChanged(List<Project> projects) {
+                mProjectList = projects;
+            }
+        });
         mTaskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
-                @Override
-                public void onChanged(List<Task> tasks) {
-                    //method to add to update RecyclerView
-                    adapter.updateTasks(tasks);
-                }
-            });
-    }
+            @Override
+            public void onChanged(List<Task> tasks) {
+                mTaskList = mTaskViewModel.sortTask(sortMethod, tasks);
+                updateView(mTaskList);
+                adapter.updateTasks(mTaskList, mProjectList);
+            }
+        });
 
-    /**
-     * RecyclerView Configuration
-     */
-
-    private void configureRecyclerView() {
-        adapter = new TasksAdapter(tasks, mProjects, this);
-        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        listTasks.setAdapter(adapter);
     }
 
     /**
@@ -168,64 +169,43 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         } else if (id == R.id.filter_recent_first) {
             sortMethod = SortMethod.RECENT_FIRST;
         }
-        updateTasks();
+
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * Adds and deletes the given task to the list of created tasks.
      * Using ViewModel instead ArrayList of Task
+     *
      * @param task
      */
 
     @Override
     public void onDeleteTask(Task task) {
         mTaskViewModel.deleteTaskById(task.getId());
-        updateTasks();
     }
 
     private void addTask(@NonNull Task task) {
         mTaskViewModel.insertTask(task);
-        updateTasks();
     }
-
-//    public void getProject() {
-    // call method getProject() from ViewModel to use method from DAO
-//    }
 
     /**
      * Updates the list of tasks in the UI
      */
-    private void updateTasks() {
+    private void updateView(List<Task> tasks) {
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
             lblNoTasks.setVisibility(View.GONE);
             listTasks.setVisibility(View.VISIBLE);
-            // Should do this in ViewModel in parameter should take enum from Activity
-//            switch (sortMethod) {
-//                case ALPHABETICAL:
-//                    Collections.sort(tasks, new TaskViewModel.TaskAZComparator());
-//                    break;
-//                case ALPHABETICAL_INVERTED:
-//                    Collections.sort(tasks, new TaskViewModel.TaskZAComparator());
-//                    break;
-//                case RECENT_FIRST:
-//                    Collections.sort(tasks, new TaskViewModel.TaskRecentComparator());
-//                    break;
-//                case OLD_FIRST:
-//                    Collections.sort(tasks, new TaskViewModel.TaskOldComparator());
-//                    break;
-//            }
-            adapter.updateTasks(tasks);
         }
     }
 
     /**
      * List of all possible sort methods for task
      */
-    private enum SortMethod {
+    public enum SortMethod {
         /**
          * Sort alphabetical by name
          */
@@ -248,24 +228,21 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         NONE
     }
 
-    //TODO : Do I need updateTask? what is update Task really though ?
 
     /**
      * Shows the Dialog for adding a Task
      */
     private void showAddTaskDialog() {
         final AlertDialog dialog = getAddTaskDialog();
-
         dialog.show();
-
         dialogEditText = dialog.findViewById(R.id.txt_task_name);
         dialogSpinner = dialog.findViewById(R.id.project_spinner);
-
         populateDialogSpinner();
     }
 
     /**
      * Returns the dialog allowing the user to create a new task.
+     *
      * @return AlertDialog
      */
     @NonNull
@@ -328,15 +305,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 //                // TODO: Replace this by id of persisted task
                 //                long id = (long) (Math.random() * 50000);
 
-                Task task = new Task(taskProject.getId(),
+                Task task = new Task(
+                        taskProject.getId(),
                         taskName,
-                        new Date().getTime()
-                );
+                        new Date().getTime());
                 addTask(task);
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
-            else{
+            else {
                 dialogInterface.dismiss();
             }
         }
@@ -350,8 +327,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
-        List<Project> projectList = mTaskViewModel.getAllProject();
-        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, projectList);
+        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mProjectList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);

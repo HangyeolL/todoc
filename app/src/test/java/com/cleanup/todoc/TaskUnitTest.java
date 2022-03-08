@@ -1,23 +1,23 @@
-package com.cleanup.todoc;
-
-import com.cleanup.todoc.model.Task;
-
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
-/**
- * Unit tests for tasks
- *
- * @author Gaëtan HERFRAY
- */
-public class TaskUnitTest {
+//package com.cleanup.todoc;
+//
+//import com.cleanup.todoc.model.Task;
+//
+//import org.junit.Test;
+//
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.Date;
+//
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertNull;
+//import static org.junit.Assert.assertSame;
+//
+///**
+// * Unit tests for tasks
+// *
+// * @author Gaëtan HERFRAY
+// */
+//public class TaskUnitTest {
 //    @Test
 //    public void test_projects() {
 //        final Task task1 = new Task(1, 1, "task 1", new Date().getTime());
@@ -98,4 +98,4 @@ public class TaskUnitTest {
 //        assertSame(tasks.get(1), task2);
 //        assertSame(tasks.get(2), task3);
 //    }
-}
+//}

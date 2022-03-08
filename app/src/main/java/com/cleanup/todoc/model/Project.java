@@ -74,10 +74,10 @@ public class Project {
         return color;
     }
 
-//    @Override
-//    @NonNull
-//    public String toString() {
-//        return getName();
-//    }
+    @Override
+    @NonNull
+    public String toString() {
+        return getName();
+    }
 
 }
