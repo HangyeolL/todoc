@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
@@ -51,7 +52,9 @@ public class ProjectDaoTest {
     }
 
     public void getAllProject() {
-        List<Project> prepopulatedProject = mProjectDao.getAllProject();
-        assertThat(prepopulatedProject, equalTo(predefinedProjectList));
+        LiveData<List<Project>> ProjectList = mProjectDao.getAllProject();
+        assertThat(ProjectList, equalTo(predefinedProjectList));
     }
+
+
 }

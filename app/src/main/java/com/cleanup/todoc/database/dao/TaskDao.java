@@ -26,6 +26,6 @@ public interface TaskDao {
     void deleteAllTasks();
 
     // Mentor took out order by creationTimestamp
-    @Query("SELECT * FROM Task ORDER BY creationTimestamp DESC")
+    @Query("SELECT * FROM Task")
     LiveData<List<Task>> getAllTasks();
 }
