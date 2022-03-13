@@ -38,7 +38,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
     private List<Project> mProjectList;
-    private List<Task> mTaskList;
+
     /**
      * The adapter which handles the list of tasks
      */
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         configureViewModel();
         configureRecyclerView();
 
-
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,9 +137,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         mTaskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
-                mTaskList = mTaskViewModel.sortTask(sortMethod, tasks);
-                updateView(mTaskList);
-                adapter.updateTasks(mTaskList, mProjectList);
+                updateView(tasks);
             }
         });
 
@@ -169,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         } else if (id == R.id.filter_recent_first) {
             sortMethod = SortMethod.RECENT_FIRST;
         }
+        List<Task> sortedTaskList = mTaskViewModel.sortTask(sortMethod, adapter.getTasks());
+        adapter.updateTasks(sortedTaskList, mProjectList);
 
         return super.onOptionsItemSelected(item);
     }
@@ -200,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             lblNoTasks.setVisibility(View.GONE);
             listTasks.setVisibility(View.VISIBLE);
         }
+        adapter.updateTasks(tasks, mProjectList);
     }
 
     /**

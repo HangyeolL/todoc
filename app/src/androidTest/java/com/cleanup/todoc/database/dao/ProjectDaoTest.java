@@ -1,24 +1,27 @@
 package com.cleanup.todoc.database.dao;
 
+import static com.cleanup.todoc.LiveDataTestUtil.getOrAwaitValue;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.cleanup.todoc.database.TodocDatabase;
 import com.cleanup.todoc.model.Project;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -27,16 +30,17 @@ public class ProjectDaoTest {
     private TodocDatabase mTodocDatabase;
     private ProjectDao mProjectDao;
 
-    private final Project testProject = new Project("Test Project A", 0xFFB4CDBB);
-    private final List<Project> predefinedProjectList = Arrays.asList(
-            new Project("Projet Lucidia", 0xFFB4CDBA),
-            new Project("Projet Tartampion", 0xFFEADAD1),
-            new Project("Projet Circus", 0xFFA3CED2));
+    private static final Project TEST_PROJECT = new Project("Test Project A", 0xFFB4CDBB);
+
+    @Rule
+    public InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
-        mTodocDatabase = Room.inMemoryDatabaseBuilder(context, TodocDatabase.class).build();
+        mTodocDatabase = Room.inMemoryDatabaseBuilder(context, TodocDatabase.class)
+                .allowMainThreadQueries()
+                .build();
         mProjectDao = mTodocDatabase.mProjectDao();
     }
 
@@ -45,16 +49,15 @@ public class ProjectDaoTest {
         mTodocDatabase.close();
     }
 
-    public void insertProjectAndGetProject() {
-        mProjectDao.insertProject(testProject);
-        Project foundProject = mProjectDao.getProject(testProject.getId());
-        assertThat(testProject, equalTo(foundProject));
-    }
+    @Test
+    public void insertProject() throws InterruptedException {
+        List<Project> projectList = getOrAwaitValue(mProjectDao.getAllProject());
+        assertFalse(projectList.contains(TEST_PROJECT));
 
-    public void getAllProject() {
-        LiveData<List<Project>> ProjectList = mProjectDao.getAllProject();
-        assertThat(ProjectList, equalTo(predefinedProjectList));
-    }
+        mProjectDao.insertProject(TEST_PROJECT);
 
+        Project projectFromTheList = getOrAwaitValue(mProjectDao.getAllProject()).get(0);
+        assertThat(projectFromTheList.getName(), equalTo(TEST_PROJECT.getName()));
+    }
 
 }

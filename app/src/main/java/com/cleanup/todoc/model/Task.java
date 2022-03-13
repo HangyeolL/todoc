@@ -1,6 +1,8 @@
 package com.cleanup.todoc.model;
 
 
+import static androidx.room.ForeignKey.CASCADE;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -11,7 +13,7 @@ import androidx.room.PrimaryKey;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "projectId"))
+@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "projectId", onDelete = CASCADE))
 public class Task {
 
     /**
@@ -28,9 +30,6 @@ public class Task {
     /**
      * The name of the task
      */
-    // Suppress warning because setName is called in constructor
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private String name;
 
     /**
@@ -40,7 +39,6 @@ public class Task {
 
     /**
      * Instantiates a new Task.
-     *
      * @param projectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
@@ -53,7 +51,6 @@ public class Task {
 
     /**
      * Returns the unique identifier of the task.
-     *
      * @return the unique identifier of the task
      */
     public long getId() {
@@ -62,7 +59,6 @@ public class Task {
 
     /**
      * Sets the unique identifier of the task.
-     *
      * @param id the unique idenifier of the task to set
      */
     public void setId(long id) {
@@ -75,7 +71,6 @@ public class Task {
 
     /**
      * Sets the unique identifier of the project associated to the task.
-     *
      * @param projectId the unique identifier of the project associated to the task to set
      */
     private void setProjectId(long projectId) {
@@ -84,7 +79,6 @@ public class Task {
 
     /**
      * Returns the name of the task.
-     *
      * @return the name of the task
      */
     @NonNull
@@ -94,7 +88,6 @@ public class Task {
 
     /**
      * Sets the name of the task.
-     *
      * @param name the name of the task to set
      */
     private void setName(@NonNull String name) {
@@ -112,7 +105,6 @@ public class Task {
 
     /**
      * Sets the timestamp when the task has been created.
-     *
      * @param creationTimestamp the timestamp when the task has been created to set
      */
     private void setCreationTimestamp(long creationTimestamp) {

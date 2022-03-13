@@ -33,7 +33,6 @@ public class TaskViewModel extends ViewModel {
         mProjectRepository = projectRepository;
         mTaskRepository = taskRepository;
         mExecutor = Executors.newFixedThreadPool(2);
-
     }
 
     /**
