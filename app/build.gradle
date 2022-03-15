@@ -9,13 +9,23 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     lintOptions {
         disable 'RestrictedApi'
     }
@@ -23,6 +33,10 @@ android {
     testOptions {
         animationsDisabled = true
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -31,19 +45,25 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.test:core:1.4.0'
-    implementation 'androidx.test.ext:junit:1.1.3'
 
-    //Test
-    def arch_version = "2.1.0"
+    // Helps testing livedata : InstantTaskExecutorRule for example
+    implementation "androidx.arch.core:core-testing:2.1.0"
+
     testImplementation 'junit:junit:4.13.2'
+    // Mockito
     testImplementation "org.mockito:mockito-core:4.2.0"
-    testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 
+//    testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.arch.core:core-testing:$arch_version"
+
+    // Android test corchestrator
     androidTestUtil 'androidx.test:orchestrator:1.4.1'
 
     //Life cycle ViewModel

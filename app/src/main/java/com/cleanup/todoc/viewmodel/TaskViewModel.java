@@ -23,9 +23,6 @@ public class TaskViewModel extends ViewModel {
     private final TaskRepository mTaskRepository;
     private final Executor mExecutor;
 
-    private List<Project> mProjects;
-    private List<Task> mTasks;
-
     /**
      * Constructor
      */
@@ -59,10 +56,6 @@ public class TaskViewModel extends ViewModel {
     /**
      * Project Methods
      */
-//    public void updateProjects(List<Project> projects) {
-//        mProjects = projects;
-//    }
-
     public Project getProject(long id) {
         return mProjectRepository.getProject(id);
     }
@@ -74,11 +67,6 @@ public class TaskViewModel extends ViewModel {
     /**
      * Task methods
      */
-
-//    public void updateTaskList(List<Task> tasks) {
-//        mTasks = tasks;
-//    }
-
     public void insertTask(Task task) {
         mExecutor.execute(() -> mTaskRepository.insertTask(task));
     }

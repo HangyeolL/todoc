@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.Date;
@@ -32,9 +31,6 @@ public class TaskDaoTest {
 
     private TodocDatabase mTodocDatabase;
     private TaskDao mTaskDao;
-
-    @Mock
-    private ProjectDao mProjectDao;
 
     private static final Project TEST_PROJECT = new Project("Test Project A", 0xFFB4CDBF);
     private static final Project TEST_PROJECT2 = new Project("Test Project B", 0xFFB4CDAA);

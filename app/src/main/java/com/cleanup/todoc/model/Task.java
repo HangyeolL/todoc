@@ -4,6 +4,7 @@ package com.cleanup.todoc.model;
 import static androidx.room.ForeignKey.CASCADE;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
@@ -13,7 +14,7 @@ import androidx.room.PrimaryKey;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "projectId", onDelete = CASCADE))
+@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "project_id", onDelete = CASCADE))
 public class Task {
 
     /**
@@ -25,6 +26,7 @@ public class Task {
     /**
      * The unique identifier of the project associated to the task
      */
+    @ColumnInfo(name = "project_id",index = true)
     private long projectId;
 
     /**

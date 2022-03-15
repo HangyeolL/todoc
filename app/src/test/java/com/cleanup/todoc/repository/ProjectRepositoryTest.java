@@ -1,24 +1,25 @@
 package com.cleanup.todoc.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.cleanup.todoc.database.dao.ProjectDao;
 import com.cleanup.todoc.model.Project;
 
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
 
 public class ProjectRepositoryTest {
 
-    private final ProjectDao mProjectDao = Mockito.mock(ProjectDao.class);
-
+    private ProjectDao mProjectDao = Mockito.mock(ProjectDao.class);
     private ProjectRepository mProjectRepository;
+
+    private static final Project TEST_PROJECT = new Project("Test Project A", 0xFFB4CDBB);
+
 
     @Before
     public void setUp() {
@@ -27,18 +28,31 @@ public class ProjectRepositoryTest {
 
     @Test
     public void getAllProjects() {
-        LiveData<List<Project>> projectList = Mockito.spy(new MutableLiveData<>());
-        Mockito.doReturn(projectList).when(mProjectDao).getAllProject();
+        LiveData<List<Project>> projectLiveData = Mockito.spy(new MutableLiveData<>());
+        Mockito.doReturn(projectLiveData).when(mProjectDao).getAllProject();
 
-        // When
         LiveData<List<Project>> result = mProjectRepository.getAllProject();
 
-        // Then
-        assertEquals(projectList, result);
-        Mockito.verify(mProjectDao).getAllProject();
-
+        Assert.assertEquals(projectLiveData, result);
+        Mockito.verify(mProjectDao, Mockito.atLeastOnce()).getAllProject();
     }
 
+    @Test
+    public void getProject() {
+        Mockito.doReturn(TEST_PROJECT).when(mProjectDao).getProject(TEST_PROJECT.getId());
 
+        Project expectedProject = mProjectRepository.getProject(TEST_PROJECT.getId());
 
+        Assert.assertEquals(TEST_PROJECT, expectedProject);
+        Mockito.verify(mProjectDao, Mockito.atLeastOnce()).getProject(TEST_PROJECT.getId());
+    }
+
+    @Test
+    public void getProjectInDifferentWay() {
+        Project testProject = Mockito.mock(Project.class);
+
+        mProjectRepository.getProject(testProject.getId());
+
+        Mockito.verify(mProjectDao, Mockito.atLeastOnce()).getProject(testProject.getId());
+    }
 }
