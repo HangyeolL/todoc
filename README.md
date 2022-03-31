@@ -47,4 +47,4 @@ In total, there are 6 tests available for this application.
 * Java
 * XML
 * Android Studio
-* 
+
