@@ -2,6 +2,7 @@ package com.cleanup.todoc.database.dao;
 
 import static com.cleanup.todoc.LiveDataTestUtil.getOrAwaitValue;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
@@ -21,7 +22,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -31,6 +31,7 @@ public class ProjectDaoTest {
     private ProjectDao mProjectDao;
 
     private static final Project TEST_PROJECT = new Project("Test Project A", 0xFFB4CDBB);
+    private static final Project TEST_PROJECT2 = new Project("Test Project B", 0xFFB4CDBB);
 
     @Rule
     public InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -45,7 +46,7 @@ public class ProjectDaoTest {
     }
 
     @After
-    public void closeDb() throws IOException {
+    public void closeDb() {
         mTodocDatabase.close();
     }
 
@@ -59,5 +60,26 @@ public class ProjectDaoTest {
         Project projectFromTheList = getOrAwaitValue(mProjectDao.getAllProject()).get(0);
         assertThat(projectFromTheList.getName(), equalTo(TEST_PROJECT.getName()));
     }
+
+   @Test
+   public void getProjectById() throws InterruptedException {
+       mProjectDao.insertProject(TEST_PROJECT);
+
+       Project expectedProject = mProjectDao.getProject(getOrAwaitValue(mProjectDao.getAllProject()).get(0).getId());
+
+       assertThat(TEST_PROJECT.getName(), equalTo(expectedProject.getName()));
+    }
+
+   @Test
+   public void getAllProject() throws InterruptedException {
+       mProjectDao.insertProject(TEST_PROJECT);
+       mProjectDao.insertProject(TEST_PROJECT2);
+
+       List<Project> projectList = getOrAwaitValue(mProjectDao.getAllProject());
+       assertFalse(projectList.isEmpty());
+       assertEquals(2, projectList.size());
+       assertThat(TEST_PROJECT.getName(), equalTo(projectList.get(0).getName()));
+       assertThat(TEST_PROJECT2.getName(), equalTo(projectList.get(1).getName()));
+   }
 
 }

@@ -92,7 +92,7 @@ public class Task {
      * Sets the name of the task.
      * @param name the name of the task to set
      */
-    private void setName(@NonNull String name) {
+    public void setName(@NonNull String name) {
         this.name = name;
     }
 

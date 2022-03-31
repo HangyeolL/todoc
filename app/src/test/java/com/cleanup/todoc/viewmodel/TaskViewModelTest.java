@@ -3,39 +3,38 @@ package com.cleanup.todoc.viewmodel;
 import static org.junit.Assert.assertSame;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
 import com.cleanup.todoc.ui.MainActivity;
-import com.cleanup.todoc.utils.TaskComparator;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class TaskViewModelTest {
 
-    private final ProjectRepository mProjectRepository = Mockito.mock(ProjectRepository.class);
-    private final TaskRepository mTaskRepository = Mockito.mock(TaskRepository.class);
+    private ProjectRepository mProjectRepository;
+    private TaskRepository mTaskRepository;
     private TaskViewModel mTaskViewModel;
+
+    private static final Task TASK1 = new Task(1, "aaa", 123);
+    private static final Task TASK2 = new Task(2, "bbb", 124);
+    private static final Task TASK3 = new Task(3, "ccc", 125);
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void setUp() {
+        mProjectRepository = Mockito.mock(ProjectRepository.class);
+        mTaskRepository = Mockito.mock(TaskRepository.class);
         mTaskViewModel = new TaskViewModel(mProjectRepository, mTaskRepository);
     }
 
@@ -50,141 +49,100 @@ public class TaskViewModelTest {
 
     @Test
     public void getAllProject() {
-        LiveData<List<Project>> projectLiveData = Mockito.spy(new MutableLiveData<>());
-        Mockito.doReturn(projectLiveData).when(mProjectRepository).getAllProject();
+        mTaskViewModel.getAllProject();
 
-        LiveData<List<Project>> result = mTaskViewModel.getAllProject();
-
-        Assert.assertEquals(projectLiveData, result);
         Mockito.verify(mProjectRepository, Mockito.atLeastOnce()).getAllProject();
     }
 
-    //To test sorting function
-    private List<Task> getTaskList() {
-        return Arrays.asList(new Task(1, "aaa", 123), new Task(2, "zzz", 124), new Task(3, "hhh", 125));
+    //Method for sort function testing purpose
+    public List<Task> getTaskList() {
+        final List<Task> taskList = new ArrayList<>();
+        taskList.add(TASK1);
+        taskList.add(TASK2);
+        taskList.add(TASK3);
+        return taskList;
     }
 
     @Test
-    public void sortTask() throws InterruptedException {
-        List<Task> expectedList = getTaskList();
-        Collections.sort(expectedList, new TaskComparator.TaskAZComparator());
+    public void sortTaskByAtoZ() {
+        List<Task> taskList = getTaskList();
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL, taskList);
 
-        List<Task> sortedList = mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL, expectedList);
-        Assert.assertEquals(expectedList, sortedList);
+        assertSame(sortedTaskList.get(0), TASK1);
+        assertSame(sortedTaskList.get(1), TASK2);
+        assertSame(sortedTaskList.get(2), TASK3);
     }
 
     @Test
-    public void test_az_comparator() {
-        final Task task1 = new Task(1, "aaa", 123);
-        final Task task2 = new Task(2, "zzz", 124);
-        final Task task3 = new Task(3, "hhh", 125);
+    public void sortTaskByZtoA() {
+        List<Task> taskList = getTaskList();
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL_INVERTED, taskList);
 
-        final ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        Collections.sort(tasks, new Task.TaskAZComparator());
-
-        assertSame(tasks.get(0), task1);
-        assertSame(tasks.get(1), task3);
-        assertSame(tasks.get(2), task2);
+        assertSame(sortedTaskList.get(0), TASK3);
+        assertSame(sortedTaskList.get(1), TASK2);
+        assertSame(sortedTaskList.get(2), TASK1);
     }
 
     @Test
-    public void test_za_comparator() {
-        final Task task1 = new Task(1, 1, "aaa", 123);
-        final Task task2 = new Task(2, 2, "zzz", 124);
-        final Task task3 = new Task(3, 3, "hhh", 125);
+    public void sortTaskByMostRecentFirst() {
+        List<Task> taskList = getTaskList();
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.RECENT_FIRST, taskList);
 
-        final ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        Collections.sort(tasks, new Task.TaskZAComparator());
-
-        assertSame(tasks.get(0), task2);
-        assertSame(tasks.get(1), task3);
-        assertSame(tasks.get(2), task1);
+        assertSame(sortedTaskList.get(0), TASK3);
+        assertSame(sortedTaskList.get(1), TASK2);
+        assertSame(sortedTaskList.get(2), TASK1);
     }
 
     @Test
-    public void test_recent_comparator() {
-        final Task task1 = new Task(1, 1, "aaa", 123);
-        final Task task2 = new Task(2, 2, "zzz", 124);
-        final Task task3 = new Task(3, 3, "hhh", 125);
+    public void sortTaskByOldestFirst() {
+        List<Task> taskList = getTaskList();
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.OLD_FIRST, taskList);
 
-        final ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        Collections.sort(tasks, new Task.TaskRecentComparator());
-
-        assertSame(tasks.get(0), task3);
-        assertSame(tasks.get(1), task2);
-        assertSame(tasks.get(2), task1);
+        assertSame(sortedTaskList.get(0), TASK1);
+        assertSame(sortedTaskList.get(1), TASK2);
+        assertSame(sortedTaskList.get(2), TASK3);
     }
 
     @Test
-    public void test_old_comparator() {
-        final Task task1 = new Task(1, 1, "aaa", 123);
-        final Task task2 = new Task(2, 2, "zzz", 124);
-        final Task task3 = new Task(3, 3, "hhh", 125);
+    public void insertTask() throws InterruptedException {
+        mTaskViewModel.insertTask(TASK1);
 
-        final ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        Collections.sort(tasks, new Task.TaskOldComparator());
+        Thread.sleep(10);
 
-        assertSame(tasks.get(0), task1);
-        assertSame(tasks.get(1), task2);
-        assertSame(tasks.get(2), task3);
+        Mockito.verify(mTaskRepository).insertTask(TASK1);
     }
 
     @Test
-    public void insertTask() {
-        Task testTask = Mockito.mock(Task.class);
+    public void updateTask() throws InterruptedException {
+        mTaskViewModel.updateTask(TASK1);
 
-        mTaskViewModel.insertTask(testTask);
+        Thread.sleep(10);
 
-        Mockito.verify(mTaskRepository).insertTask(testTask);
+        Mockito.verify(mTaskRepository).updateTask(TASK1);
     }
 
     @Test
-    public void updateTask() {
-        Task testTask = Mockito.mock(Task.class);
+    public void deleteTaskById() throws InterruptedException {
+        mTaskViewModel.deleteTaskById(TASK1.getId());
 
-        mTaskViewModel.updateTask(testTask);
+        Thread.sleep(10);
 
-        Mockito.verify(mTaskRepository).updateTask(testTask);
+        Mockito.verify(mTaskRepository).deleteTaskById(TASK1.getId());
     }
 
     @Test
-    public void deleteTaskById() {
-        Task testTask = Mockito.mock(Task.class);
-
-        mTaskViewModel.deleteTaskById(testTask.getId());
-
-        Mockito.verify(mTaskRepository).deleteTaskById(testTask.getId());
-    }
-
-    @Test
-    public void deleteAllTasks() {
-        LiveData<List<Task>> taskLiveData = mTaskViewModel.getAllTasks();
-
+    public void deleteAllTasks() throws InterruptedException {
         mTaskViewModel.deleteAllTasks();
+
+        Thread.sleep(10);
+
         Mockito.verify(mTaskRepository).deleteAllTasks();
-        Assert.assertNull(taskLiveData);
     }
 
     @Test
     public void getAllTasks() {
-        LiveData<List<Task>> taskLiveData = Mockito.spy(new MutableLiveData<>());
-        Mockito.doReturn(taskLiveData).when(mTaskRepository).getAllTasks();
+        mTaskViewModel.getAllTasks();
 
-        LiveData<List<Task>> result = mTaskViewModel.getAllTasks();
-
-        Assert.assertEquals(taskLiveData, result);
         Mockito.verify(mTaskRepository, Mockito.atLeastOnce()).getAllTasks();
     }
 

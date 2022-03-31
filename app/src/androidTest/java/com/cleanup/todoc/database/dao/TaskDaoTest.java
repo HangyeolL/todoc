@@ -4,6 +4,7 @@ import static com.cleanup.todoc.LiveDataTestUtil.getOrAwaitValue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 
@@ -17,6 +18,7 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,10 +35,9 @@ public class TaskDaoTest {
     private TaskDao mTaskDao;
 
     private static final Project TEST_PROJECT = new Project("Test Project A", 0xFFB4CDBF);
-    private static final Project TEST_PROJECT2 = new Project("Test Project B", 0xFFB4CDAA);
 
     private static final Task TEST_TASK = new Task(1, "Test Task A", new Date().getTime());
-    private static final Task TEST_TASK2 = new Task(2, "Test Task B", new Date().getTime());
+    private static final Task TEST_TASK2 = new Task(1, "Test Task B", new Date().getTime());
 
     @Rule
     public InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -48,7 +49,6 @@ public class TaskDaoTest {
         mTaskDao = mTodocDatabase.mTaskDao();
 
         mTodocDatabase.mProjectDao().insertProject(TEST_PROJECT);
-        mTodocDatabase.mProjectDao().insertProject(TEST_PROJECT2);
     }
 
     @After
@@ -56,7 +56,6 @@ public class TaskDaoTest {
         mTodocDatabase.close();
     }
 
-    // verify by name and size not containing boolean
     @Test
     public void insertTask() throws InterruptedException {
         List<Task> taskListBefore = getOrAwaitValue(mTaskDao.getAllTasks());
@@ -68,6 +67,20 @@ public class TaskDaoTest {
 
         Task taskFromTheList = getOrAwaitValue(mTaskDao.getAllTasks()).get(0);
         assertThat(taskFromTheList.getName(), equalTo(TEST_TASK.getName()));
+    }
+
+    @Test
+    public void updateTask() throws InterruptedException {
+        mTaskDao.insertTask(TEST_TASK);
+
+        Task task = getOrAwaitValue(mTaskDao.getAllTasks()).get(0);
+        assertEquals(TEST_TASK.getName(), task.getName());
+
+        task.setName("Updated Task");
+        mTaskDao.updateTask(task);
+
+        Task taskAfterModification = getOrAwaitValue(mTaskDao.getAllTasks()).get(0);
+        assertEquals("Updated Task", taskAfterModification.getName());
     }
 
     @Test
@@ -94,5 +107,18 @@ public class TaskDaoTest {
         mTaskDao.deleteAllTasks();
         List<Task> taskListAfter = getOrAwaitValue(mTaskDao.getAllTasks());
         assertEquals(0, taskListAfter.size());
+    }
+
+    @Test
+    public void getAllTasks() throws InterruptedException {
+        List<Task> taskList = getOrAwaitValue(mTaskDao.getAllTasks());
+        assertTrue(taskList.isEmpty());
+
+        mTaskDao.insertTask(TEST_TASK);
+        mTaskDao.insertTask(TEST_TASK2);
+
+        List<Task> taskListAfter = getOrAwaitValue(mTaskDao.getAllTasks());
+        Assert.assertFalse(taskListAfter.isEmpty());
+        assertEquals(2, taskListAfter.size());
     }
 }
