@@ -1,4 +1,4 @@
-package com.cleanup.todoc.ui;
+package com.cleanup.todoc.ui.task;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -23,10 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
-import com.cleanup.todoc.viewmodel.TaskViewModel;
 import com.cleanup.todoc.viewmodel.ViewModelFactory;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,7 +33,7 @@ import java.util.List;
  *
  * @author Gaëtan HERFRAY
  */
-public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+public class TasksActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
     private List<Project> mProjectList;
 
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * ViewModel
      */
-    private TaskViewModel mTaskViewModel;
+    private TasksViewModel mTaskViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,19 +120,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
 
     public void configureViewModel() {
-        mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(TaskViewModel.class);
+        mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(TasksViewModel.class);
 
-        mTaskViewModel.getAllProject().observe(this, new Observer<List<Project>>() {
+        mTaskViewModel.getViewStateLiveData().observe(this, new Observer<List<TasksViewStates>>() {
             @Override
-            public void onChanged(List<Project> projects) {
-                mProjectList = projects;
-            }
-        });
-
-        mTaskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> tasks) {
-                updateView(tasks);
+            public void onChanged(List<TasksViewStates> tasksViewStates) {
+                adapter.submitList(tasksViewStates);
             }
         });
     }
@@ -177,11 +168,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        mTaskViewModel.deleteTaskById(task.getId());
-    }
-
-    private void addTask(@NonNull Task task) {
-        mTaskViewModel.insertTask(task);
+        mTaskViewModel.onDeleteTask(task.getId());
     }
 
     /**
@@ -287,31 +274,33 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             // Get the name of the task
             String taskName = dialogEditText.getText().toString();
             // Get the selected project to be associated to the task
-            Project taskProject = null;
             if (dialogSpinner.getSelectedItem() instanceof Project) {
-                taskProject = (Project) dialogSpinner.getSelectedItem();
-            }
-            // If a name has not been set
-            if (taskName.trim().isEmpty()) {
-                dialogEditText.setError(getString(R.string.empty_task_name));
-            }
-            // If both project and name of the task have been set
-            else if (taskProject != null) {
-                //                Normally we don't need this cause DAO does automatically
-                //                // TODO: Replace this by id of persisted task
-                //                long id = (long) (Math.random() * 50000);
+                Project project = (Project) dialogSpinner.getSelectedItem();
 
-                Task task = new Task(
-                        taskProject.getId(),
-                        taskName,
-                        new Date().getTime());
-                addTask(task);
-                dialogInterface.dismiss();
+                mTaskViewModel.onAddTaskButtonClick(project, taskName);
             }
-            // If name has been set, but project has not been set (this should never occur)
-            else {
-                dialogInterface.dismiss();
-            }
+
+//            // If a name has not been set
+//            if (taskName.trim().isEmpty()) {
+//                dialogEditText.setError(getString(R.string.empty_task_name));
+//            }
+//            // If both project and name of the task have been set
+//            else if (taskProject != null) {
+//                //                Normally we don't need this cause DAO does automatically
+//                //                // TODO: Replace this by id of persisted task
+//                //                long id = (long) (Math.random() * 50000);
+//
+//                Task task = new Task(
+//                        taskProject.getId(),
+//                        taskName,
+//                        new Date().getTime());
+//                addTask(task);
+//                dialogInterface.dismiss();
+//            }
+//            // If name has been set, but project has not been set (this should never occur)
+//            else {
+//                dialogInterface.dismiss();
+//            }
         }
         // If dialog is already closed
         else {

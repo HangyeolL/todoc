@@ -31,7 +31,7 @@ public class TaskRepository {
         mTaskDao.deleteAllTasks();
     }
 
-    public LiveData<List<Task>> getAllTasks() {
+    public LiveData<List<Task>> getAllTasksLiveData() {
         return mTaskDao.getAllTasks();
     }
 }

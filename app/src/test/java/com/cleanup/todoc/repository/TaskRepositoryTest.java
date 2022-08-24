@@ -54,7 +54,7 @@ public class TaskRepositoryTest {
 
     @Test
     public void getAllTasks() {
-        mTaskRepository.getAllTasks();
+        mTaskRepository.getAllTasksLiveData();
 
         Mockito.verify(mTaskDao, Mockito.atLeastOnce()).getAllTasks();
     }

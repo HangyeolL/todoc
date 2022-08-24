@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.cleanup.todoc.ui.MainActivity;
+import com.cleanup.todoc.ui.task.TasksActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,11 +32,11 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityInstrumentedTest {
     @Rule
-    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<TasksActivity> rule = new ActivityTestRule<>(TasksActivity.class);
 
     @Test
     public void addAndRemoveTask() {
-        MainActivity activity = rule.getActivity();
+        TasksActivity activity = rule.getActivity();
         TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
         RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
 
@@ -61,7 +61,7 @@ public class MainActivityInstrumentedTest {
 
     @Test
     public void sortTasks() {
-        MainActivity activity = rule.getActivity();
+        TasksActivity activity = rule.getActivity();
 
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("aaa Tâche example"));

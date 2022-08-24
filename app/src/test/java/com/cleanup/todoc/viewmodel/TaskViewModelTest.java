@@ -8,7 +8,8 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
-import com.cleanup.todoc.ui.MainActivity;
+import com.cleanup.todoc.ui.task.TasksActivity;
+import com.cleanup.todoc.ui.task.TasksViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,7 +23,7 @@ public class TaskViewModelTest {
 
     private ProjectRepository mProjectRepository;
     private TaskRepository mTaskRepository;
-    private TaskViewModel mTaskViewModel;
+    private TasksViewModel mTaskViewModel;
 
     private static final Task TASK1 = new Task(1, "aaa", 123);
     private static final Task TASK2 = new Task(2, "bbb", 124);
@@ -35,7 +36,7 @@ public class TaskViewModelTest {
     public void setUp() {
         mProjectRepository = Mockito.mock(ProjectRepository.class);
         mTaskRepository = Mockito.mock(TaskRepository.class);
-        mTaskViewModel = new TaskViewModel(mProjectRepository, mTaskRepository);
+        mTaskViewModel = new TasksViewModel(mProjectRepository, mTaskRepository);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class TaskViewModelTest {
     public void getAllProject() {
         mTaskViewModel.getAllProject();
 
-        Mockito.verify(mProjectRepository, Mockito.atLeastOnce()).getAllProject();
+        Mockito.verify(mProjectRepository, Mockito.atLeastOnce()).getAllProjectLiveData();
     }
 
     //Method for sort function testing purpose
@@ -66,7 +67,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByAtoZ() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.ALPHABETICAL, taskList);
 
         assertSame(sortedTaskList.get(0), TASK1);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -76,7 +77,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByZtoA() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL_INVERTED, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.ALPHABETICAL_INVERTED, taskList);
 
         assertSame(sortedTaskList.get(0), TASK3);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -86,7 +87,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByMostRecentFirst() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.RECENT_FIRST, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.RECENT_FIRST, taskList);
 
         assertSame(sortedTaskList.get(0), TASK3);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -96,7 +97,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByOldestFirst() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.OLD_FIRST, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.OLD_FIRST, taskList);
 
         assertSame(sortedTaskList.get(0), TASK1);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -110,15 +111,6 @@ public class TaskViewModelTest {
         Thread.sleep(10);
 
         Mockito.verify(mTaskRepository).insertTask(TASK1);
-    }
-
-    @Test
-    public void updateTask() throws InterruptedException {
-        mTaskViewModel.updateTask(TASK1);
-
-        Thread.sleep(10);
-
-        Mockito.verify(mTaskRepository).updateTask(TASK1);
     }
 
     @Test
@@ -143,7 +135,7 @@ public class TaskViewModelTest {
     public void getAllTasks() {
         mTaskViewModel.getAllTasks();
 
-        Mockito.verify(mTaskRepository, Mockito.atLeastOnce()).getAllTasks();
+        Mockito.verify(mTaskRepository, Mockito.atLeastOnce()).getAllTasksLiveData();
     }
 
 }

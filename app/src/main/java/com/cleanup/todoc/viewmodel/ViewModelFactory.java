@@ -9,11 +9,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.cleanup.todoc.database.TodocDatabase;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
+import com.cleanup.todoc.ui.task.TasksViewModel;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
-    private ProjectRepository mProjectRepository;
-    private TaskRepository mTaskRepository;
+    private final ProjectRepository mProjectRepository;
+    private final TaskRepository mTaskRepository;
+    private final Executor mExecutor;
 
     private static ViewModelFactory mViewModelFactory;
 
@@ -39,14 +44,15 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         TodocDatabase database = TodocDatabase.getInstance(context);
         mProjectRepository = new ProjectRepository(database.mProjectDao());
         mTaskRepository = new TaskRepository(database.mTaskDao());
+        mExecutor = Executors.newFixedThreadPool(2);
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
-        if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(mProjectRepository, mTaskRepository);
+        if (modelClass.isAssignableFrom(TasksViewModel.class)) {
+            return (T) new TasksViewModel(mProjectRepository, mTaskRepository, mExecutor);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

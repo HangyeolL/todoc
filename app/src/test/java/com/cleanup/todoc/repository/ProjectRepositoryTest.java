@@ -19,7 +19,7 @@ public class ProjectRepositoryTest {
 
     @Test
     public void getAllProjects() {
-        mProjectRepository.getAllProject();
+        mProjectRepository.getAllProjectLiveData();
 
         Mockito.verify(mProjectDao, Mockito.atLeastOnce()).getAllProject();
     }
