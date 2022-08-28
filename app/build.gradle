@@ -11,6 +11,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+
     buildTypes {
         debug {
             testCoverageEnabled true

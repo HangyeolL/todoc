@@ -1,7 +1,8 @@
 package com.cleanup.todoc.ui.task;
 
-
 import static com.cleanup.todoc.ui.task.TasksActivity.SortMethod;
+
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +54,7 @@ public class TasksViewModel extends ViewModel {
                 combine(projectsLiveData.getValue(), tasks);
             }
         });
+
     }
 
     private void combine(@Nullable List<Project> projects, @Nullable List<Task> tasks) {
@@ -60,49 +62,39 @@ public class TasksViewModel extends ViewModel {
             return;
         }
 
-        List<TasksViewStates> viewStates = new ArrayList<>();
-
+        List<TasksViewStates> tasksViewStatesList = new ArrayList<>();
         for (Task task : tasks) {
             for (Project project : projects) {
                 if (project.getId() == task.getProjectId()) {
-                    TasksViewStates viewState = new TasksViewStates(
-                        task.getId(),
-                        "This is something you want to : " + task.getName(),
-                        project.getColor()
-                    );
-
-                    viewStates.add(viewState);
+                    tasksViewStatesList.add(new TasksViewStates(
+                            task.getId(), task.getName(), project.getColor(), project.getName()));
                     break;
                 }
             }
         }
-
-        viewStateMediatorLiveData.setValue(viewStates);
+        viewStateMediatorLiveData.setValue(tasksViewStatesList);
     }
 
-    public LiveData<List<TasksViewStates>> getViewStateLiveData() {
+    public LiveData<List<TasksViewStates>> getTasksViewStateLiveData() {
         return viewStateMediatorLiveData;
     }
 
-    /**
-     * Sorting List of Tasks according to Enum
-     */
-    public List<Task> sortTask(SortMethod sortOption, List<Task> tasks) {
+    public List<TasksViewStates> onSortTaskMenuClick(SortMethod sortOption, List<TasksViewStates> tasksViewStatesList) {
         switch (sortOption) {
             case ALPHABETICAL:
-                Collections.sort(tasks, new TaskComparator.TaskAZComparator());
+                Collections.sort(tasksViewStatesList, new TaskComparator.TaskAZComparator());
                 break;
             case ALPHABETICAL_INVERTED:
-                Collections.sort(tasks, new TaskComparator.TaskZAComparator());
+                Collections.sort(tasksViewStatesList, new TaskComparator.TaskZAComparator());
                 break;
-            case RECENT_FIRST:
-                Collections.sort(tasks, new TaskComparator.TaskRecentComparator());
-                break;
-            case OLD_FIRST:
-                Collections.sort(tasks, new TaskComparator.TaskOldComparator());
-                break;
+//            case RECENT_FIRST:
+//                Collections.sort(tasksViewStatesList, new TaskComparator.TaskRecentComparator());
+//                break;
+//            case OLD_FIRST:
+//                Collections.sort(tasksViewStatesList, new TaskComparator.TaskOldComparator());
+//                break;
         }
-        return tasks;
+        return tasksViewStatesList;
     }
 
     /**
@@ -127,11 +119,11 @@ public class TasksViewModel extends ViewModel {
 
     public void onAddTaskButtonClick(@NonNull Project project, @NonNull String taskName) {
         mExecutor.execute(() -> mTaskRepository.insertTask(
-            new Task(
-                project.getId(),
-                taskName,
-                new Date().getTime()
-            )
+                new Task(
+                        project.getId(),
+                        taskName,
+                        new Date().getTime()
+                )
         ));
     }
 

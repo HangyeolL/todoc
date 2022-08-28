@@ -1,6 +1,7 @@
 package com.cleanup.todoc.utils;
 
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.ui.task.TasksViewStates;
 
 import java.util.Comparator;
 
@@ -8,20 +9,20 @@ public class TaskComparator {
     /**
      * Comparator to sort task from A to Z
      */
-    public static class TaskAZComparator implements Comparator<Task> {
+    public static class TaskAZComparator implements Comparator<TasksViewStates> {
         @Override
-        public int compare(Task left, Task right) {
-            return left.getName().compareTo(right.getName());
+        public int compare(TasksViewStates left, TasksViewStates right) {
+            return left.getTaskDescription().compareTo(right.getTaskDescription());
         }
     }
 
     /**
      * Comparator to sort task from Z to A
      */
-    public static class TaskZAComparator implements Comparator<Task> {
+    public static class TaskZAComparator implements Comparator<TasksViewStates> {
         @Override
-        public int compare(Task left, Task right) {
-            return right.getName().compareTo(left.getName());
+        public int compare(TasksViewStates left, TasksViewStates right) {
+            return right.getTaskDescription().compareTo(left.getTaskDescription());
         }
     }
 

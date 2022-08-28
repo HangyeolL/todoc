@@ -16,7 +16,6 @@ import androidx.room.PrimaryKey;
  */
 @Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "project_id", onDelete = CASCADE))
 public class Task {
-
     /**
      * The unique identifier of the task
      */
@@ -95,11 +94,6 @@ public class Task {
     public void setName(@NonNull String name) {
         this.name = name;
     }
-
-    /**
-     * Deleted method but I created again to make app work
-     * @return
-     */
 
     public long getCreationTimestamp() {
         return creationTimestamp;

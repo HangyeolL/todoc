@@ -11,7 +11,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import java.util.ArrayList;
@@ -27,9 +26,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      * The list of tasks the adapter deals with
      */
     @NonNull
-    private List<Task> tasks = new ArrayList<>();
-
-    private List<Project> mProjects  = new ArrayList<>();
+    private List<TasksViewStates> mTasksViewStates = new ArrayList<>();
     /**
      * The listener for when a task needs to be deleted
      */
@@ -43,19 +40,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         this.deleteTaskListener = deleteTaskListener;
     }
 
-    protected List<Task> getTasks(){
-        return this.tasks;
+    public void submitList(@NonNull final List<TasksViewStates> tasksViewStates) {
+        mTasksViewStates = tasksViewStates;
     }
 
-    /**
-     * Updates the list of tasks the adapter deals with.
-     *
-     * @param tasks the list of tasks the adapter deals with to set
-     */
-    public void updateTasks(@NonNull final List<Task> tasks, List<Project> projects) {
-        this.tasks = tasks;
-        mProjects = projects;
-        notifyDataSetChanged();
+    public List<TasksViewStates> getList() {
+        return mTasksViewStates;
     }
 
     @NonNull
@@ -67,24 +57,16 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) {
-        taskViewHolder.bind(tasks.get(position));
+        taskViewHolder.bind(mTasksViewStates.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return mTasksViewStates.size();
     }
 
-    /**
-     * Listener for deleting tasks
-     */
     public interface DeleteTaskListener {
-        /**
-         * Called when a task needs to be deleted.
-         *
-         * @param task
-         */
-        void onDeleteTask(Task task);
+        void onDeleteTaskViewStates(TasksViewStates tasksViewStates);
     }
 
     /**
@@ -138,37 +120,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 @Override
                 public void onClick(View view) {
                     final Object tag = view.getTag();
-                    if (tag instanceof Task) {
-                        TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
+                    if (tag instanceof TasksViewStates) {
+                        TaskViewHolder.this.deleteTaskListener.onDeleteTaskViewStates((TasksViewStates) tag);
                     }
                 }
             });
         }
 
-        /**
-         * Binds a task to the item view.
-         *
-         * @param task
-         */
-        void bind(Task task) {
-            lblTaskName.setText(task.getName());
-            imgDelete.setTag(task);
-
-            Project taskProject = null;
-            for (Project mProject : mProjects) {
-                if (mProject.getId() == task.getProjectId()) {
-                    taskProject = mProject;
-                }
-            }
-
-            if (taskProject != null) {
-                imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
-                lblProjectName.setText(taskProject.getName());
-            } else {
-                imgProject.setVisibility(View.INVISIBLE);
-                lblProjectName.setText("");
-            }
-
+        void bind(TasksViewStates tasksViewStates) {
+            lblTaskName.setText(tasksViewStates.getTaskDescription());
+            imgDelete.setTag(tasksViewStates);
+            imgProject.setSupportImageTintList(ColorStateList.valueOf(tasksViewStates.getProjectColor()));
+            lblProjectName.setText(tasksViewStates.getProjectName());
         }
     }
 }
