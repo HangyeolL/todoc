@@ -8,7 +8,7 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
-import com.cleanup.todoc.ui.task.TasksActivity;
+import com.cleanup.todoc.ui.MainActivity;
 import com.cleanup.todoc.ui.task.TasksViewModel;
 
 import org.junit.Before;
@@ -67,7 +67,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByAtoZ() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.ALPHABETICAL, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL, taskList);
 
         assertSame(sortedTaskList.get(0), TASK1);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -77,7 +77,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByZtoA() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.ALPHABETICAL_INVERTED, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.ALPHABETICAL_INVERTED, taskList);
 
         assertSame(sortedTaskList.get(0), TASK3);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -87,7 +87,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByMostRecentFirst() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.RECENT_FIRST, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.RECENT_FIRST, taskList);
 
         assertSame(sortedTaskList.get(0), TASK3);
         assertSame(sortedTaskList.get(1), TASK2);
@@ -97,7 +97,7 @@ public class TaskViewModelTest {
     @Test
     public void sortTaskByOldestFirst() {
         List<Task> taskList = getTaskList();
-        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(TasksActivity.SortMethod.OLD_FIRST, taskList);
+        ArrayList<Task> sortedTaskList = (ArrayList<Task>) mTaskViewModel.sortTask(MainActivity.SortMethod.OLD_FIRST, taskList);
 
         assertSame(sortedTaskList.get(0), TASK1);
         assertSame(sortedTaskList.get(1), TASK2);

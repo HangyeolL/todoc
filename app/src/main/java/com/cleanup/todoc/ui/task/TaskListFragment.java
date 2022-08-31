@@ -117,6 +117,7 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        // Will move this to ViewModel
         SortMethod sortMethod = SortMethod.NONE;
 
         if (id == R.id.filter_alphabetical) {
@@ -129,6 +130,7 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
+        // ViewModel can only return viewstate
         mAdapter.submitList(mTaskViewModel.onSortTaskMenuClick(sortMethod, mAdapter.getList()));
         binding.listTasks.setAdapter(mAdapter);
 

@@ -37,6 +37,7 @@ public class AddTaskDialogFragment extends DialogFragment {
         mViewModel.getAllProject().observe(getViewLifecycleOwner(), new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projectList) {
+                // Instead of Spinner in XML we can use AutoComplete text view
                 ArrayAdapter<Project> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, projectList);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 binding.projectSpinner.setAdapter(spinnerAdapter);

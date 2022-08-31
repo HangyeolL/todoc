@@ -44,6 +44,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         mTasksViewStates = tasksViewStates;
     }
 
+    // BAD PRACTICE -> ViewModel should be the source of the truth
+    // Fragment and Adapter shouldnt know about list sorted or not
     public List<TasksViewStates> getList() {
         return mTasksViewStates;
     }
