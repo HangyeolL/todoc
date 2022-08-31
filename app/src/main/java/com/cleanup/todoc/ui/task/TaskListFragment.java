@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.databinding.FragmentTaskListBinding;
@@ -28,8 +27,6 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
     private TasksViewModel mTaskViewModel;
     private FragmentTaskListBinding binding;
     private NavigationListener navigationListener;
-
-    private TasksAdapter mAdapter;
 
     public static TaskListFragment newInstance() {
         return new TaskListFragment();
@@ -48,15 +45,14 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
         binding = FragmentTaskListBinding.inflate(inflater, container, false);
         mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getActivity())).get(TasksViewModel.class);
 
-        mAdapter = new TasksAdapter(this);
-        binding.listTasks.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        TasksAdapter adapter = new TasksAdapter(this);
+        binding.listTasks.setAdapter(adapter);
 
         mTaskViewModel.getTasksViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<List<TasksViewStates>>() {
             @Override
             public void onChanged(List<TasksViewStates> tasksViewStates) {
                 updateView(tasksViewStates);
-                mAdapter.submitList(tasksViewStates);
-                binding.listTasks.setAdapter(mAdapter);
+                adapter.submitList(tasksViewStates);
             }
         });
 
@@ -91,48 +87,32 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
         inflater.inflate(R.menu.actions, menu);
     }
 
-    public enum SortMethod {
-        /**
-         * Sort alphabetical by name
-         */
-        ALPHABETICAL,
-        /**
-         * Inverted sort alphabetical by name
-         */
-        ALPHABETICAL_INVERTED,
-        /**
-         * Lastly created first
-         */
-        RECENT_FIRST,
-        /**
-         * First created first
-         */
-        OLD_FIRST,
-        /**
-         * No sort
-         */
-        NONE
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        boolean handled = false;
         int id = item.getItemId();
         // Will move this to ViewModel
-        SortMethod sortMethod = SortMethod.NONE;
+        TasksViewModel.SortMethod sortMethod = TasksViewModel.SortMethod.NONE;
 
         if (id == R.id.filter_alphabetical) {
-            sortMethod = SortMethod.ALPHABETICAL;
+            sortMethod = TasksViewModel.SortMethod.ALPHABETICAL;
+            handled = true;
         } else if (id == R.id.filter_alphabetical_inverted) {
-            sortMethod = SortMethod.ALPHABETICAL_INVERTED;
+            sortMethod = TasksViewModel.SortMethod.ALPHABETICAL_INVERTED;
+            handled = true;
         } else if (id == R.id.filter_oldest_first) {
-            sortMethod = SortMethod.OLD_FIRST;
+            sortMethod = TasksViewModel.SortMethod.OLD_FIRST;
+            handled = true;
         } else if (id == R.id.filter_recent_first) {
-            sortMethod = SortMethod.RECENT_FIRST;
+            sortMethod = TasksViewModel.SortMethod.RECENT_FIRST;
+            handled = true;
         }
 
-        // ViewModel can only return viewstate
-        mAdapter.submitList(mTaskViewModel.onSortTaskMenuClick(sortMethod, mAdapter.getList()));
-        binding.listTasks.setAdapter(mAdapter);
+        mTaskViewModel.onSortTaskMenuClick(sortMethod);
+
+        if (handled) {
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

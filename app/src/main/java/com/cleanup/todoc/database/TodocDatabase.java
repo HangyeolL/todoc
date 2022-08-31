@@ -21,17 +21,20 @@ public abstract class TodocDatabase extends RoomDatabase {
      * Singleton
      */
     private static volatile TodocDatabase INSTANCE;
+
     // --- DAO ---
     public abstract ProjectDao mProjectDao();
+
     public abstract TaskDao mTaskDao();
+
     // --- INSTANCE ---
     public static TodocDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (TodocDatabase.class) {
-                INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                        TodocDatabase.class, "TodocDatabase.db")
-                        .addCallback(prepopulateDatabase())
-                        .build();
+                INSTANCE = Room.databaseBuilder(context.getApplicationContext(), TodocDatabase.class, "TodocDatabase.db")
+                    .allowMainThreadQueries()
+                    .addCallback(prepopulateDatabase())
+                    .build();
             }
         }
 

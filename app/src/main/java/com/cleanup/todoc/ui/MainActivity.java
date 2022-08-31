@@ -1,32 +1,18 @@
 package com.cleanup.todoc.ui;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.databinding.ActivityMainBinding;
-import com.cleanup.todoc.databinding.FragmentDialogAddTaskBinding;
-import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.ui.addTask.AddTaskDialogFragment;
 import com.cleanup.todoc.ui.task.TaskListFragment;
 import com.cleanup.todoc.ui.task.TasksAdapter;
 import com.cleanup.todoc.ui.task.TasksViewModel;
 import com.cleanup.todoc.ui.task.TasksViewStates;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener, NavigationListener {
-
-    private ActivityMainBinding binding;
-
-    private TasksAdapter mAdapter;
 
     private TasksViewModel mTaskViewModel;
 
@@ -37,9 +23,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         setContentView(R.layout.activity_main);
 
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_frame_layout, TaskListFragment.newInstance())
-                .commitNow();
+            .beginTransaction()
+            .replace(R.id.main_frame_layout, TaskListFragment.newInstance())
+            .commitNow();
     }
 
     public void onDeleteTaskViewStates(TasksViewStates tasksViewStates) {
@@ -82,6 +68,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 //
 //            }
 //        });
-    }
+//    }
 
 }

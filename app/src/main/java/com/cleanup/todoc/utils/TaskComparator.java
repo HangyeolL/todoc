@@ -9,20 +9,20 @@ public class TaskComparator {
     /**
      * Comparator to sort task from A to Z
      */
-    public static class TaskAZComparator implements Comparator<TasksViewStates> {
+    public static class TaskAZComparator implements Comparator<Task> {
         @Override
-        public int compare(TasksViewStates left, TasksViewStates right) {
-            return left.getTaskDescription().compareTo(right.getTaskDescription());
+        public int compare(Task left, Task right) {
+            return left.getName().compareTo(right.getName());
         }
     }
 
     /**
      * Comparator to sort task from Z to A
      */
-    public static class TaskZAComparator implements Comparator<TasksViewStates> {
+    public static class TaskZAComparator implements Comparator<Task> {
         @Override
-        public int compare(TasksViewStates left, TasksViewStates right) {
-            return right.getTaskDescription().compareTo(left.getTaskDescription());
+        public int compare(Task left, Task right) {
+            return right.getName().compareTo(left.getName());
         }
     }
 

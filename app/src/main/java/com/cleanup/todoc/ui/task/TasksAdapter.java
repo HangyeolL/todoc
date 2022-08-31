@@ -42,12 +42,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     public void submitList(@NonNull final List<TasksViewStates> tasksViewStates) {
         mTasksViewStates = tasksViewStates;
-    }
-
-    // BAD PRACTICE -> ViewModel should be the source of the truth
-    // Fragment and Adapter shouldnt know about list sorted or not
-    public List<TasksViewStates> getList() {
-        return mTasksViewStates;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -76,7 +71,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @author Gaëtan HERFRAY
      */
-    class TaskViewHolder extends RecyclerView.ViewHolder {
+    static class TaskViewHolder extends RecyclerView.ViewHolder {
         /**
          * The circle icon showing the color of the project
          */

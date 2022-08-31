@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
@@ -16,15 +17,17 @@ import com.cleanup.todoc.utils.TaskComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 public class TasksViewModel extends ViewModel {
 
-    private final ProjectRepository mProjectRepository;
     private final TaskRepository mTaskRepository;
     private final Executor mExecutor;
+
+    private final MutableLiveData<SortMethod> currentSortingMutableLiveData = new MutableLiveData<>(SortMethod.NONE);
 
     private final MediatorLiveData<List<TasksViewStates>> viewStateMediatorLiveData = new MediatorLiveData<>();
 
@@ -32,7 +35,6 @@ public class TasksViewModel extends ViewModel {
      * Constructor
      */
     public TasksViewModel(ProjectRepository projectRepository, TaskRepository taskRepository, Executor executor) {
-        mProjectRepository = projectRepository;
         mTaskRepository = taskRepository;
         mExecutor = executor;
 
@@ -42,29 +44,90 @@ public class TasksViewModel extends ViewModel {
         viewStateMediatorLiveData.addSource(projectsLiveData, new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projects) {
-                combine(projects, tasksLiveData.getValue());
+                combine(projects, tasksLiveData.getValue(), currentSortingMutableLiveData.getValue());
             }
         });
         viewStateMediatorLiveData.addSource(tasksLiveData, new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
-                combine(projectsLiveData.getValue(), tasks);
+                combine(projectsLiveData.getValue(), tasks, currentSortingMutableLiveData.getValue());
+            }
+        });
+        viewStateMediatorLiveData.addSource(currentSortingMutableLiveData, new Observer<SortMethod>() {
+            @Override
+            public void onChanged(SortMethod sortMethod) {
+                combine(projectsLiveData.getValue(), tasksLiveData.getValue(), sortMethod);
             }
         });
 
+        taskRepository.insertTask(
+            new Task(
+                1,
+                "Nino",
+                new Date().getTime()
+            )
+        );
+        taskRepository.insertTask(
+            new Task(
+                2,
+                "Nino2",
+                new Date().getTime()
+            )
+        );
+        taskRepository.insertTask(
+            new Task(
+                3,
+                "Nino3",
+                new Date().getTime()
+            )
+        );
+        taskRepository.insertTask(
+            new Task(
+                2,
+                "Nino4",
+                new Date().getTime()
+            )
+        );
+        taskRepository.insertTask(
+            new Task(
+                1,
+                "Nino5",
+                new Date().getTime()
+            )
+        );
+        taskRepository.insertTask(
+            new Task(
+                2,
+                "Nino6",
+                new Date().getTime()
+            )
+        );
     }
 
-    private void combine(@Nullable List<Project> projects, @Nullable List<Task> tasks) {
-        if (projects == null || tasks == null) {
+    private void combine(@Nullable List<Project> projects, @Nullable List<Task> tasks, @Nullable SortMethod sortMethod) {
+        if (projects == null || tasks == null || sortMethod == null) {
             return;
         }
 
         List<TasksViewStates> tasksViewStatesList = new ArrayList<>();
+
+        Comparator<Task> comparator = sortMethod.getComparator();
+
+        if (comparator != null) {
+            Collections.sort(tasks, comparator);
+        }
+
         for (Task task : tasks) {
             for (Project project : projects) {
                 if (project.getId() == task.getProjectId()) {
-                    tasksViewStatesList.add(new TasksViewStates(
-                            task.getId(), task.getName(), project.getColor(), project.getName()));
+                    tasksViewStatesList.add(
+                        new TasksViewStates(
+                            task.getId(),
+                            task.getName(),
+                            project.getColor(),
+                            project.getName()
+                        )
+                    );
                     break;
                 }
             }
@@ -76,55 +139,56 @@ public class TasksViewModel extends ViewModel {
         return viewStateMediatorLiveData;
     }
 
-    public List<TasksViewStates> onSortTaskMenuClick(TaskListFragment.SortMethod sortOption, List<TasksViewStates> tasksViewStatesList) {
-        switch (sortOption) {
-            case ALPHABETICAL:
-                Collections.sort(tasksViewStatesList, new TaskComparator.TaskAZComparator());
-                break;
-            case ALPHABETICAL_INVERTED:
-                Collections.sort(tasksViewStatesList, new TaskComparator.TaskZAComparator());
-                break;
-//            case RECENT_FIRST:
-//                Collections.sort(tasksViewStatesList, new TaskComparator.TaskRecentComparator());
-//                break;
-//            case OLD_FIRST:
-//                Collections.sort(tasksViewStatesList, new TaskComparator.TaskOldComparator());
-//                break;
-        }
-        return tasksViewStatesList;
+    public void onSortTaskMenuClick(SortMethod sortMethod) {
+        currentSortingMutableLiveData.setValue(sortMethod);
     }
-
-    /**
-     * Project Methods
-     */
-    public Project getProject(long id) {
-        return mProjectRepository.getProject(id);
-    }
-
-    public LiveData<List<Project>> getAllProject() {
-        return mProjectRepository.getAllProjectLiveData();
-    }
-
-    public void deleteAllTasks() {
-        mExecutor.execute(() -> mTaskRepository.deleteAllTasks());
-    }
-
-    public LiveData<List<Task>> getAllTasks() {
-        return mTaskRepository.getAllTasksLiveData();
-    }
-
 
     public void onAddTaskButtonClick(@NonNull Project project, @NonNull String taskName) {
         mExecutor.execute(() -> mTaskRepository.insertTask(
-                new Task(
-                        project.getId(),
-                        taskName,
-                        new Date().getTime()
-                )
+            new Task(
+                project.getId(),
+                taskName,
+                new Date().getTime()
+            )
         ));
     }
 
     public void onDeleteTask(long taskId) {
         mExecutor.execute(() -> mTaskRepository.deleteTaskById(taskId));
+    }
+
+    public enum SortMethod {
+        /**
+         * Sort alphabetical by name
+         */
+        ALPHABETICAL(new TaskComparator.TaskAZComparator()),
+        /**
+         * Inverted sort alphabetical by name
+         */
+        ALPHABETICAL_INVERTED(new TaskComparator.TaskZAComparator()),
+        /**
+         * Lastly created first
+         */
+        RECENT_FIRST(new TaskComparator.TaskRecentComparator()),
+        /**
+         * First created first
+         */
+        OLD_FIRST(new TaskComparator.TaskOldComparator()),
+        /**
+         * No sort
+         */
+        NONE(null);
+
+        @Nullable
+        private final Comparator<Task> comparator;
+
+        SortMethod(@Nullable Comparator<Task> comparator) {
+            this.comparator = comparator;
+        }
+
+        @Nullable
+        public Comparator<Task> getComparator() {
+            return comparator;
+        }
     }
 }
