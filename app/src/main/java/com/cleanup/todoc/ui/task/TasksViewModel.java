@@ -1,8 +1,5 @@
 package com.cleanup.todoc.ui.task;
 
-import static com.cleanup.todoc.ui.task.TasksActivity.SortMethod;
-
-import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -79,7 +76,7 @@ public class TasksViewModel extends ViewModel {
         return viewStateMediatorLiveData;
     }
 
-    public List<TasksViewStates> onSortTaskMenuClick(SortMethod sortOption, List<TasksViewStates> tasksViewStatesList) {
+    public List<TasksViewStates> onSortTaskMenuClick(TaskListFragment.SortMethod sortOption, List<TasksViewStates> tasksViewStatesList) {
         switch (sortOption) {
             case ALPHABETICAL:
                 Collections.sort(tasksViewStatesList, new TaskComparator.TaskAZComparator());
