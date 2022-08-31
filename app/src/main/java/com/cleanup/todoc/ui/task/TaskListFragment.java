@@ -42,6 +42,8 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         binding = FragmentTaskListBinding.inflate(inflater, container, false);
         mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getActivity())).get(TasksViewModel.class);
 

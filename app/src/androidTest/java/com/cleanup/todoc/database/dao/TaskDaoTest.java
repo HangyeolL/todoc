@@ -46,9 +46,9 @@ public class TaskDaoTest {
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         mTodocDatabase = Room.inMemoryDatabaseBuilder(context, TodocDatabase.class).allowMainThreadQueries().build();
-        mTaskDao = mTodocDatabase.mTaskDao();
+        mTaskDao = mTodocDatabase.getTaskDao();
 
-        mTodocDatabase.mProjectDao().insertProject(TEST_PROJECT);
+        mTodocDatabase.getProjectDao().insertProject(TEST_PROJECT);
     }
 
     @After

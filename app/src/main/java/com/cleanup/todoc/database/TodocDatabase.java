@@ -13,6 +13,7 @@ import com.cleanup.todoc.database.dao.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
+import java.util.Date;
 import java.util.concurrent.Executors;
 
 @Database(entities = {Task.class, Project.class}, version = 1, exportSchema = false)
@@ -23,16 +24,15 @@ public abstract class TodocDatabase extends RoomDatabase {
     private static volatile TodocDatabase INSTANCE;
 
     // --- DAO ---
-    public abstract ProjectDao mProjectDao();
+    public abstract ProjectDao getProjectDao();
 
-    public abstract TaskDao mTaskDao();
+    public abstract TaskDao getTaskDao();
 
     // --- INSTANCE ---
     public static TodocDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (TodocDatabase.class) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(), TodocDatabase.class, "TodocDatabase.db")
-                    .allowMainThreadQueries()
                     .addCallback(prepopulateDatabase())
                     .build();
             }
@@ -49,10 +49,52 @@ public abstract class TodocDatabase extends RoomDatabase {
                 super.onCreate(db);
 
                 Executors.newSingleThreadExecutor().execute(() -> {
-                    INSTANCE.mProjectDao().insertProject(new Project("Projet Lucidia", 0xFFB4CDBA));
-                    INSTANCE.mProjectDao().insertProject(new Project("Projet Tartampion", 0xFFEADAD1));
-                    INSTANCE.mProjectDao().insertProject(new Project("Projet Circus", 0xFFA3CED2));
+                    INSTANCE.getProjectDao().insertProject(new Project("Projet Lucidia", 0xFFB4CDBA));
+                    INSTANCE.getProjectDao().insertProject(new Project("Projet Tartampion", 0xFFEADAD1));
+                    INSTANCE.getProjectDao().insertProject(new Project("Projet Circus", 0xFFA3CED2));
 
+                    INSTANCE.getTaskDao().insertTask(
+                        new Task(
+                            1,
+                            "Nino",
+                            new Date().getTime()
+                        )
+                    );
+                    INSTANCE.getTaskDao().insertTask(
+                        new Task(
+                            2,
+                            "Nino2",
+                            new Date().getTime()
+                        )
+                    );
+                    INSTANCE.getTaskDao().insertTask(
+                        new Task(
+                            3,
+                            "Nino3",
+                            new Date().getTime()
+                        )
+                    );
+                    INSTANCE.getTaskDao().insertTask(
+                        new Task(
+                            2,
+                            "Nino4",
+                            new Date().getTime()
+                        )
+                    );
+                    INSTANCE.getTaskDao().insertTask(
+                        new Task(
+                            1,
+                            "Nino5",
+                            new Date().getTime()
+                        )
+                    );
+                    INSTANCE.getTaskDao().insertTask(
+                        new Task(
+                            2,
+                            "Nino6",
+                            new Date().getTime()
+                        )
+                    );
                 });
             }
         };

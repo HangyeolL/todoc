@@ -59,49 +59,6 @@ public class TasksViewModel extends ViewModel {
                 combine(projectsLiveData.getValue(), tasksLiveData.getValue(), sortMethod);
             }
         });
-
-        taskRepository.insertTask(
-            new Task(
-                1,
-                "Nino",
-                new Date().getTime()
-            )
-        );
-        taskRepository.insertTask(
-            new Task(
-                2,
-                "Nino2",
-                new Date().getTime()
-            )
-        );
-        taskRepository.insertTask(
-            new Task(
-                3,
-                "Nino3",
-                new Date().getTime()
-            )
-        );
-        taskRepository.insertTask(
-            new Task(
-                2,
-                "Nino4",
-                new Date().getTime()
-            )
-        );
-        taskRepository.insertTask(
-            new Task(
-                1,
-                "Nino5",
-                new Date().getTime()
-            )
-        );
-        taskRepository.insertTask(
-            new Task(
-                2,
-                "Nino6",
-                new Date().getTime()
-            )
-        );
     }
 
     private void combine(@Nullable List<Project> projects, @Nullable List<Task> tasks, @Nullable SortMethod sortMethod) {

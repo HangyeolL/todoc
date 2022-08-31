@@ -42,7 +42,7 @@ public class ProjectDaoTest {
         mTodocDatabase = Room.inMemoryDatabaseBuilder(context, TodocDatabase.class)
                 .allowMainThreadQueries()
                 .build();
-        mProjectDao = mTodocDatabase.mProjectDao();
+        mProjectDao = mTodocDatabase.getProjectDao();
     }
 
     @After
