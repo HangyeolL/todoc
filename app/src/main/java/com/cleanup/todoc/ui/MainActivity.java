@@ -8,13 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.ui.addTask.AddTaskDialogFragment;
 import com.cleanup.todoc.ui.task.TaskListFragment;
-import com.cleanup.todoc.ui.task.TasksAdapter;
-import com.cleanup.todoc.ui.task.TasksViewModel;
+import com.cleanup.todoc.ui.task.TaskListAdapter;
+import com.cleanup.todoc.ui.task.TaskListFragmentViewModel;
 import com.cleanup.todoc.ui.task.TasksViewStates;
 
-public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener, NavigationListener {
+public class MainActivity extends AppCompatActivity implements TaskListAdapter.DeleteTaskListener, NavigationListener {
 
-    private TasksViewModel mTaskViewModel;
+    private TaskListFragmentViewModel mTaskViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

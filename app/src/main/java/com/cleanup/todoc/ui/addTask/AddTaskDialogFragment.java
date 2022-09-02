@@ -34,6 +34,9 @@ public class AddTaskDialogFragment extends DialogFragment {
 
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getActivity())).get(AddTaskDialogFragmentViewModel.class);
 
+        final AddTaskProjectSpinnerAdapter adapter = new AddTaskProjectSpinnerAdapter(requireContext());
+        binding.projectSpinner.setAdapter(adapter);
+
         mViewModel.getAllProject().observe(getViewLifecycleOwner(), new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projectList) {

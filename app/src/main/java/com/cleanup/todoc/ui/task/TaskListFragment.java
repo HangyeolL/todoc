@@ -22,9 +22,9 @@ import com.cleanup.todoc.ui.ViewModelFactory;
 
 import java.util.List;
 
-public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTaskListener{
+public class TaskListFragment extends Fragment implements TaskListAdapter.DeleteTaskListener{
 
-    private TasksViewModel mTaskViewModel;
+    private TaskListFragmentViewModel mTaskViewModel;
     private FragmentTaskListBinding binding;
     private NavigationListener navigationListener;
 
@@ -45,9 +45,9 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
         setHasOptionsMenu(true);
 
         binding = FragmentTaskListBinding.inflate(inflater, container, false);
-        mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getActivity())).get(TasksViewModel.class);
+        mTaskViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getActivity())).get(TaskListFragmentViewModel.class);
 
-        TasksAdapter adapter = new TasksAdapter(this);
+        TaskListAdapter adapter = new TaskListAdapter(this);
         binding.listTasks.setAdapter(adapter);
 
         mTaskViewModel.getTasksViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<List<TasksViewStates>>() {
@@ -94,19 +94,19 @@ public class TaskListFragment extends Fragment implements TasksAdapter.DeleteTas
         boolean handled = false;
         int id = item.getItemId();
         // Will move this to ViewModel
-        TasksViewModel.SortMethod sortMethod = TasksViewModel.SortMethod.NONE;
+        TaskListFragmentViewModel.SortMethod sortMethod = TaskListFragmentViewModel.SortMethod.NONE;
 
         if (id == R.id.filter_alphabetical) {
-            sortMethod = TasksViewModel.SortMethod.ALPHABETICAL;
+            sortMethod = TaskListFragmentViewModel.SortMethod.ALPHABETICAL;
             handled = true;
         } else if (id == R.id.filter_alphabetical_inverted) {
-            sortMethod = TasksViewModel.SortMethod.ALPHABETICAL_INVERTED;
+            sortMethod = TaskListFragmentViewModel.SortMethod.ALPHABETICAL_INVERTED;
             handled = true;
         } else if (id == R.id.filter_oldest_first) {
-            sortMethod = TasksViewModel.SortMethod.OLD_FIRST;
+            sortMethod = TaskListFragmentViewModel.SortMethod.OLD_FIRST;
             handled = true;
         } else if (id == R.id.filter_recent_first) {
-            sortMethod = TasksViewModel.SortMethod.RECENT_FIRST;
+            sortMethod = TaskListFragmentViewModel.SortMethod.RECENT_FIRST;
             handled = true;
         }
 

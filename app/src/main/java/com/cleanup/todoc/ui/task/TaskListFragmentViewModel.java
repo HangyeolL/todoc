@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class TasksViewModel extends ViewModel {
+public class TaskListFragmentViewModel extends ViewModel {
 
     private final TaskRepository mTaskRepository;
     private final Executor mExecutor;
@@ -34,7 +34,7 @@ public class TasksViewModel extends ViewModel {
     /**
      * Constructor
      */
-    public TasksViewModel(ProjectRepository projectRepository, TaskRepository taskRepository, Executor executor) {
+    public TaskListFragmentViewModel(ProjectRepository projectRepository, TaskRepository taskRepository, Executor executor) {
         mTaskRepository = taskRepository;
         mExecutor = executor;
 
@@ -89,6 +89,7 @@ public class TasksViewModel extends ViewModel {
                 }
             }
         }
+
         viewStateMediatorLiveData.setValue(tasksViewStatesList);
     }
 

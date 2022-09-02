@@ -9,7 +9,7 @@ import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
 import com.cleanup.todoc.ui.MainActivity;
-import com.cleanup.todoc.ui.task.TasksViewModel;
+import com.cleanup.todoc.ui.task.TaskListFragmentViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,7 +23,7 @@ public class TaskViewModelTest {
 
     private ProjectRepository mProjectRepository;
     private TaskRepository mTaskRepository;
-    private TasksViewModel mTaskViewModel;
+    private TaskListFragmentViewModel mTaskViewModel;
 
     private static final Task TASK1 = new Task(1, "aaa", 123);
     private static final Task TASK2 = new Task(2, "bbb", 124);
@@ -36,7 +36,7 @@ public class TaskViewModelTest {
     public void setUp() {
         mProjectRepository = Mockito.mock(ProjectRepository.class);
         mTaskRepository = Mockito.mock(TaskRepository.class);
-        mTaskViewModel = new TasksViewModel(mProjectRepository, mTaskRepository);
+        mTaskViewModel = new TaskListFragmentViewModel(mProjectRepository, mTaskRepository);
     }
 
     @Test

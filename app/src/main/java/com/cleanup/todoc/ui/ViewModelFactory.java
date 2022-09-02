@@ -10,7 +10,7 @@ import com.cleanup.todoc.database.TodocDatabase;
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
 import com.cleanup.todoc.ui.addTask.AddTaskDialogFragmentViewModel;
-import com.cleanup.todoc.ui.task.TasksViewModel;
+import com.cleanup.todoc.ui.task.TaskListFragmentViewModel;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -52,8 +52,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
-        if (modelClass.isAssignableFrom(TasksViewModel.class)) {
-            return (T) new TasksViewModel(mProjectRepository, mTaskRepository, mExecutor);
+        if (modelClass.isAssignableFrom(TaskListFragmentViewModel.class)) {
+            return (T) new TaskListFragmentViewModel(mProjectRepository, mTaskRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(AddTaskDialogFragmentViewModel.class)) {
             return (T) new AddTaskDialogFragmentViewModel(mProjectRepository, mExecutor);
