@@ -11,8 +11,9 @@ import androidx.annotation.Nullable;
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.databinding.AddTaskProjectSpinnerItemBinding;
+import com.cleanup.todoc.model.Project;
 
-public class AddTaskProjectSpinnerAdapter extends ArrayAdapter<AddTaskProjectSpinnerItemViewState> {
+public class AddTaskProjectSpinnerAdapter extends ArrayAdapter<Project> {
 
     public AddTaskProjectSpinnerAdapter(@NonNull Context context) {
         super(context, R.layout.add_task_project_spinner_item);
@@ -33,12 +34,12 @@ public class AddTaskProjectSpinnerAdapter extends ArrayAdapter<AddTaskProjectSpi
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         AddTaskProjectSpinnerItemBinding binding = AddTaskProjectSpinnerItemBinding.inflate(inflater, parent, false);
 
-        AddTaskProjectSpinnerItemViewState item = getItem(position);
+        Project item = getItem(position);
 
         assert item != null;
 
-        binding.imageView.setColorFilter(item.getProjectColor());
-        binding.textView.setText(item.getProjectName());
+        binding.imageView.setColorFilter(item.getColor());
+        binding.textView.setText(item.getName());
 
         return binding.getRoot();
     }

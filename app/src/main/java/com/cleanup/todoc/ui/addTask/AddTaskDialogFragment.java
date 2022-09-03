@@ -1,9 +1,12 @@
 package com.cleanup.todoc.ui.addTask;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -37,15 +40,43 @@ public class AddTaskDialogFragment extends DialogFragment {
         final AddTaskProjectSpinnerAdapter adapter = new AddTaskProjectSpinnerAdapter(requireContext());
         binding.projectSpinner.setAdapter(adapter);
 
+        binding.projectSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mViewModel.onProjectSelected(adapter.getItem(position).getId());
+            }
+        });
+
+        binding.txtTaskName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mViewModel.onTaskDescriptionChanged(s.toString());
+            }
+        });
+
         mViewModel.getAllProject().observe(getViewLifecycleOwner(), new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projectList) {
-                // Instead of Spinner in XML we can use AutoComplete text view
-                ArrayAdapter<Project> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, projectList);
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                binding.projectSpinner.setAdapter(spinnerAdapter);
-
+                adapter.addAll(projectList);
             }
+        });
+
+        binding.buttonOk.setOnClickListener(listener -> {
+            mViewModel.onAddTaskButtonClick();
+        });
+
+        binding.buttonCancel.setOnClickListener(listener -> {
+            dismiss();
         });
 
         return binding.getRoot();

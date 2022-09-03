@@ -101,16 +101,6 @@ public class TaskListFragmentViewModel extends ViewModel {
         currentSortingMutableLiveData.setValue(sortMethod);
     }
 
-    public void onAddTaskButtonClick(@NonNull Project project, @NonNull String taskName) {
-        mExecutor.execute(() -> mTaskRepository.insertTask(
-            new Task(
-                project.getId(),
-                taskName,
-                new Date().getTime()
-            )
-        ));
-    }
-
     public void onDeleteTask(long taskId) {
         mExecutor.execute(() -> mTaskRepository.deleteTaskById(taskId));
     }

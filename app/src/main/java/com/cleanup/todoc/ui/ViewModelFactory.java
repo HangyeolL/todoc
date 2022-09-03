@@ -56,7 +56,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new TaskListFragmentViewModel(mProjectRepository, mTaskRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(AddTaskDialogFragmentViewModel.class)) {
-            return (T) new AddTaskDialogFragmentViewModel(mProjectRepository, mExecutor);
+            return (T) new AddTaskDialogFragmentViewModel(mTaskRepository,mProjectRepository, mExecutor);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
