@@ -26,8 +26,6 @@ public class AddTaskDialogFragment extends DialogFragment {
 
     private AddTaskDialogFragmentViewModel mViewModel;
 
-    ArrayAdapter<Project> projectArrayAdapter;
-
     public static AddTaskDialogFragment newInstance() {
         return new AddTaskDialogFragment();
     }
@@ -45,7 +43,7 @@ public class AddTaskDialogFragment extends DialogFragment {
         binding.projectSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mViewModel.onProjectSelected(projectArrayAdapter.getItem(position).getId());
+                mViewModel.onProjectSelected(adapter.getItem(position).getProjectId());
             }
         });
 

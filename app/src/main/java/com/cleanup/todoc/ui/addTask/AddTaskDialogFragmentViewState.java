@@ -5,19 +5,22 @@ import java.util.Objects;
 
 public class AddTaskDialogFragmentViewState {
 
-    private final List<AddTaskProjectSpinnerItemViewState> mAddTaskProjectSpinnerItemViewStateList;
-    private final Boolean isProgressBarVisible;
+    private final List<AddTaskProjectSpinnerItemViewState> addTaskProjectSpinnerItemViewStateList;
+    private final boolean isProgressBarVisible;
 
-    public AddTaskDialogFragmentViewState(List<AddTaskProjectSpinnerItemViewState> mAddTaskProjectSpinnerItemViewStateList, Boolean isProgressBarVisible) {
-        this.mAddTaskProjectSpinnerItemViewStateList = mAddTaskProjectSpinnerItemViewStateList;
+    public AddTaskDialogFragmentViewState(
+        List<AddTaskProjectSpinnerItemViewState> addTaskProjectSpinnerItemViewStateList,
+        boolean isProgressBarVisible
+    ) {
+        this.addTaskProjectSpinnerItemViewStateList = addTaskProjectSpinnerItemViewStateList;
         this.isProgressBarVisible = isProgressBarVisible;
     }
 
     public List<AddTaskProjectSpinnerItemViewState> getAddTaskProjectSpinnerItemViewStateList() {
-        return mAddTaskProjectSpinnerItemViewStateList;
+        return addTaskProjectSpinnerItemViewStateList;
     }
 
-    public Boolean getProgressBarVisible() {
+    public boolean getProgressBarVisible() {
         return isProgressBarVisible;
     }
 
@@ -26,19 +29,19 @@ public class AddTaskDialogFragmentViewState {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AddTaskDialogFragmentViewState that = (AddTaskDialogFragmentViewState) o;
-        return Objects.equals(mAddTaskProjectSpinnerItemViewStateList, that.mAddTaskProjectSpinnerItemViewStateList);
+        return isProgressBarVisible == that.isProgressBarVisible && Objects.equals(addTaskProjectSpinnerItemViewStateList, that.addTaskProjectSpinnerItemViewStateList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mAddTaskProjectSpinnerItemViewStateList);
+        return Objects.hash(addTaskProjectSpinnerItemViewStateList, isProgressBarVisible);
     }
 
     @Override
     public String toString() {
         return "AddTaskDialogFragmentViewState{" +
-                "mAddTaskProjectSpinnerItemViewStateList=" + mAddTaskProjectSpinnerItemViewStateList +
-                '}';
+            "addTaskProjectSpinnerItemViewStateList=" + addTaskProjectSpinnerItemViewStateList +
+            ", isProgressBarVisible=" + isProgressBarVisible +
+            '}';
     }
-
 }

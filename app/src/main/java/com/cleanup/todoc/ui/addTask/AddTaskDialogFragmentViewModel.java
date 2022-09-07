@@ -1,11 +1,10 @@
 package com.cleanup.todoc.ui.addTask;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.cleanup.todoc.model.Project;
@@ -20,62 +19,60 @@ import java.util.concurrent.Executor;
 
 public class AddTaskDialogFragmentViewModel extends ViewModel {
 
-    private final TaskRepository mTaskRepository;
-    private final ProjectRepository mProjectRepository;
-    private final Executor mExecutor;
+    private final TaskRepository taskRepository;
+    private final Executor executor;
 
-    private MediatorLiveData<AddTaskDialogFragmentViewState> viewStateMediatorLiveData = new MediatorLiveData<>();
-    private MutableLiveData<Boolean> isProgressBarVisibleMutableLiveData = new MutableLiveData<>(true);
+    private final MediatorLiveData<AddTaskDialogFragmentViewState> viewStateMediatorLiveData = new MediatorLiveData<>();
 
     @Nullable
     private Long projectId;
     @Nullable
     private String taskName;
 
-    public AddTaskDialogFragmentViewModel(TaskRepository mTaskRepository, ProjectRepository mProjectRepository, Executor mExecutor) {
-        this.mTaskRepository = mTaskRepository;
-        this.mProjectRepository = mProjectRepository;
-        this.mExecutor = mExecutor;
+    public AddTaskDialogFragmentViewModel(TaskRepository taskRepository, ProjectRepository projectRepository, Executor executor) {
+        this.taskRepository = taskRepository;
+        this.executor = executor;
 
-        LiveData<List<Project>> projectList = mProjectRepository.getAllProjectLiveData();
+        LiveData<List<Project>> projectListLiveData = projectRepository.getAllProjectLiveData();
 
-        viewStateMediatorLiveData.addSource(projectList, new Observer<List<Project>>() {
+        viewStateMediatorLiveData.setValue(
+            new AddTaskDialogFragmentViewState(
+                new ArrayList<>(),
+                true
+            )
+        );
+
+        viewStateMediatorLiveData.addSource(projectListLiveData, new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projects) {
-                combine(projects, isProgressBarVisibleMutableLiveData.getValue());
-            }
-        });
-
-        viewStateMediatorLiveData.addSource(isProgressBarVisibleMutableLiveData, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isProgressBarVisible) {
-                combine(projectList.getValue(), isProgressBarVisible);
+                combine(projects);
             }
         });
     }
 
-    private void combine(@Nullable List<Project> projectList, Boolean isProgressBarVisible) {
-        if (projectList == null ) {
+    private void combine(@Nullable List<Project> projectList) {
+        if (projectList == null) {
             return;
         }
 
         List<AddTaskProjectSpinnerItemViewState> addTaskProjectSpinnerItemViewStateList = new ArrayList<>();
 
         for (Project project : projectList) {
-            AddTaskProjectSpinnerItemViewState addTaskProjectSpinnerItemViewState = new AddTaskProjectSpinnerItemViewState(project.getId(), project.getColor(), project.getName());
-            addTaskProjectSpinnerItemViewStateList.add(addTaskProjectSpinnerItemViewState);
+            addTaskProjectSpinnerItemViewStateList.add(
+                new AddTaskProjectSpinnerItemViewState(
+                    project.getId(),
+                    project.getColor(),
+                    project.getName()
+                )
+            );
         }
 
-        if (!addTaskProjectSpinnerItemViewStateList.isEmpty()) {
-            isProgressBarVisibleMutableLiveData.setValue(false);
-        } else {
-            isProgressBarVisibleMutableLiveData.setValue(true);
-        }
-
-        AddTaskDialogFragmentViewState addTaskDialogFragmentViewState =
-                new AddTaskDialogFragmentViewState(addTaskProjectSpinnerItemViewStateList, isProgressBarVisibleMutableLiveData.getValue());
-
-        viewStateMediatorLiveData.setValue(addTaskDialogFragmentViewState);
+        viewStateMediatorLiveData.setValue(
+            new AddTaskDialogFragmentViewState(
+                addTaskProjectSpinnerItemViewStateList,
+                false
+            )
+        );
     }
 
     public MediatorLiveData<AddTaskDialogFragmentViewState> getViewStateMediatorLiveData() {
@@ -92,7 +89,7 @@ public class AddTaskDialogFragmentViewModel extends ViewModel {
 
     public void onAddTaskButtonClick() {
         if (projectId != null && taskName != null && !taskName.isEmpty()) {
-            mExecutor.execute(() -> mTaskRepository.insertTask(
+            executor.execute(() -> taskRepository.insertTask(
                     new Task(projectId,
                             taskName,
                             new Date().getTime()
