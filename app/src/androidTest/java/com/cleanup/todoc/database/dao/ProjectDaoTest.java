@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 
@@ -40,7 +41,6 @@ public class ProjectDaoTest {
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         mTodocDatabase = Room.inMemoryDatabaseBuilder(context, TodocDatabase.class)
-                .allowMainThreadQueries()
                 .build();
         mProjectDao = mTodocDatabase.getProjectDao();
     }
@@ -51,35 +51,56 @@ public class ProjectDaoTest {
     }
 
     @Test
-    public void insertProject() throws InterruptedException {
-        List<Project> projectList = getOrAwaitValue(mProjectDao.getAllProject());
-        assertFalse(projectList.contains(TEST_PROJECT));
+    public void insert_one_project() throws InterruptedException {
+        //Scenario : User requests to insert one project in the list
 
+        //Given : I have empty project list
+        List<Project> projectListBefore = getOrAwaitValue(mProjectDao.getAllProject());
+        assertTrue(projectListBefore.isEmpty());
+        assertFalse(projectListBefore.contains(TEST_PROJECT));
+
+        //When
         mProjectDao.insertProject(TEST_PROJECT);
 
+        //Then
         Project projectFromTheList = getOrAwaitValue(mProjectDao.getAllProject()).get(0);
         assertThat(projectFromTheList.getName(), equalTo(TEST_PROJECT.getName()));
+        List<Project> projectListAfter = getOrAwaitValue(mProjectDao.getAllProject());
+        assertTrue(projectListAfter.size() == 1);
     }
 
-   @Test
-   public void getProjectById() throws InterruptedException {
-       mProjectDao.insertProject(TEST_PROJECT);
+    @Test
+    public void get_the_right_project() throws InterruptedException {
+        // Scenario : User requests to find the project
 
-       Project expectedProject = mProjectDao.getProject(getOrAwaitValue(mProjectDao.getAllProject()).get(0).getId());
+        //Given : I have one project already in the list
+        mProjectDao.insertProject(TEST_PROJECT);
+        List<Project> projectListBefore = getOrAwaitValue(mProjectDao.getAllProject());
+        assertTrue(projectListBefore.size() == 1);
 
-       assertThat(TEST_PROJECT.getName(), equalTo(expectedProject.getName()));
+        //When
+        Project expectedProject = mProjectDao.getProject(getOrAwaitValue(mProjectDao.getAllProject()).get(0).getId());
+
+        //Then
+        assertThat(TEST_PROJECT.getName(), equalTo(expectedProject.getName()));
     }
 
-   @Test
-   public void getAllProject() throws InterruptedException {
-       mProjectDao.insertProject(TEST_PROJECT);
-       mProjectDao.insertProject(TEST_PROJECT2);
+    @Test
+    public void getAllProject() throws InterruptedException {
+        //Scenario : User request to get the list of all the project
 
-       List<Project> projectList = getOrAwaitValue(mProjectDao.getAllProject());
-       assertFalse(projectList.isEmpty());
-       assertEquals(2, projectList.size());
-       assertThat(TEST_PROJECT.getName(), equalTo(projectList.get(0).getName()));
-       assertThat(TEST_PROJECT2.getName(), equalTo(projectList.get(1).getName()));
-   }
+        //Given : I have a project list with 2 projects inside
+        mProjectDao.insertProject(TEST_PROJECT);
+        mProjectDao.insertProject(TEST_PROJECT2);
+
+        //When
+        List<Project> projectList = getOrAwaitValue(mProjectDao.getAllProject());
+        assertFalse(projectList.isEmpty());
+        assertEquals(2, projectList.size());
+
+        //Then
+        assertThat(TEST_PROJECT.getName(), equalTo(projectList.get(0).getName()));
+        assertThat(TEST_PROJECT2.getName(), equalTo(projectList.get(1).getName()));
+    }
 
 }

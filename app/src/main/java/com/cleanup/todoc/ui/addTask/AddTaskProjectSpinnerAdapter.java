@@ -13,7 +13,7 @@ import com.cleanup.todoc.R;
 import com.cleanup.todoc.databinding.AddTaskProjectSpinnerItemBinding;
 import com.cleanup.todoc.model.Project;
 
-public class AddTaskProjectSpinnerAdapter extends ArrayAdapter<Project> {
+public class AddTaskProjectSpinnerAdapter extends ArrayAdapter<AddTaskProjectSpinnerItemViewState> {
 
     public AddTaskProjectSpinnerAdapter(@NonNull Context context) {
         super(context, R.layout.add_task_project_spinner_item);
@@ -34,12 +34,12 @@ public class AddTaskProjectSpinnerAdapter extends ArrayAdapter<Project> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         AddTaskProjectSpinnerItemBinding binding = AddTaskProjectSpinnerItemBinding.inflate(inflater, parent, false);
 
-        Project item = getItem(position);
+        AddTaskProjectSpinnerItemViewState item = getItem(position);
 
         assert item != null;
 
-        binding.imageView.setColorFilter(item.getColor());
-        binding.textView.setText(item.getName());
+        binding.imageView.setColorFilter(item.getProjectColor());
+        binding.textView.setText(item.getProjectName());
 
         return binding.getRoot();
     }

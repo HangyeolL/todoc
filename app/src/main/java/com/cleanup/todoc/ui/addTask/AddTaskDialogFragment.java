@@ -26,6 +26,8 @@ public class AddTaskDialogFragment extends DialogFragment {
 
     private AddTaskDialogFragmentViewModel mViewModel;
 
+    ArrayAdapter<Project> projectArrayAdapter;
+
     public static AddTaskDialogFragment newInstance() {
         return new AddTaskDialogFragment();
     }
@@ -43,7 +45,7 @@ public class AddTaskDialogFragment extends DialogFragment {
         binding.projectSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mViewModel.onProjectSelected(adapter.getItem(position).getId());
+                mViewModel.onProjectSelected(projectArrayAdapter.getItem(position).getId());
             }
         });
 
@@ -64,15 +66,26 @@ public class AddTaskDialogFragment extends DialogFragment {
             }
         });
 
-        mViewModel.getAllProject().observe(getViewLifecycleOwner(), new Observer<List<Project>>() {
+        mViewModel.getViewStateMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<AddTaskDialogFragmentViewState>() {
             @Override
-            public void onChanged(List<Project> projectList) {
-                adapter.addAll(projectList);
+            public void onChanged(AddTaskDialogFragmentViewState addTaskDialogFragmentViewState) {
+                adapter.addAll(addTaskDialogFragmentViewState.getAddTaskProjectSpinnerItemViewStateList());
+
+                if (addTaskDialogFragmentViewState.getProgressBarVisible()) {
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                } else {
+                    binding.progressBar.setVisibility(View.GONE);
+                }
             }
         });
 
+//                projectArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.add_task_project_spinner_item, R.id.textView, projectList);
+//                projectArrayAdapter.setDropDownViewResource(R.layout.add_task_project_spinner_item);
+//                binding.projectSpinner.setAdapter(projectArrayAdapter);
+
         binding.buttonOk.setOnClickListener(listener -> {
             mViewModel.onAddTaskButtonClick();
+            dismiss();
         });
 
         binding.buttonCancel.setOnClickListener(listener -> {
