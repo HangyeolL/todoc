@@ -22,7 +22,6 @@ public class TasksViewStates {
         this.taskDescription = taskDescription;
         this.projectColor = projectColor;
         this.projectName = projectName;
-
     }
 
     public long getTaskId() {
@@ -41,4 +40,27 @@ public class TasksViewStates {
         return projectName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TasksViewStates that = (TasksViewStates) o;
+        return taskId == that.taskId && projectColor == that.projectColor && Objects.equals(taskDescription, that.taskDescription) && Objects.equals(projectName, that.projectName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId, taskDescription, projectColor, projectName);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "TasksViewStates{" +
+            "taskId=" + taskId +
+            ", taskDescription='" + taskDescription + '\'' +
+            ", projectColor=" + projectColor +
+            ", projectName='" + projectName + '\'' +
+            '}';
+    }
 }

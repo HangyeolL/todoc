@@ -2,7 +2,9 @@ package com.cleanup.todoc.model;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -17,26 +19,33 @@ public class Project {
      * The unique identifier of the project
      */
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private final long id;
 
     /**
      * The name of the project
      */
     @NonNull
-    private String name;
+    private final String name;
 
     /**
      * The hex (ARGB) code of the color associated to the project
      */
 
-    private int color;
+    private final int color;
 
     /**
      * Instantiates a new Project.
      * @param name  the name of the project to set
      * @param color the hex (ARGB) code of the color associated to the project to set
      */
+    @Ignore
     public Project(@NonNull String name, int color) {
+        this(0, name, color);
+    }
+
+    @VisibleForTesting
+    public Project(long id, @NonNull String name, int color) {
+        this.id = id;
         this.name = name;
         this.color = color;
     }
@@ -48,10 +57,6 @@ public class Project {
      */
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     /**
@@ -72,12 +77,6 @@ public class Project {
 
     public int getColor() {
         return color;
-    }
-
-    @Override
-    @NonNull
-    public String toString() {
-        return getName();
     }
 
 }

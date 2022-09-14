@@ -1,7 +1,6 @@
 package com.cleanup.todoc.ui.task;
 
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -18,7 +17,6 @@ import com.cleanup.todoc.utils.TaskComparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
