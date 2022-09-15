@@ -4,12 +4,17 @@ package com.cleanup.todoc.model;
 import static androidx.room.ForeignKey.CASCADE;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import com.cleanup.todoc.ui.addTask.AddTaskDialogFragmentViewState;
+
+import java.util.Objects;
 
 /**
  * <p>Model for the tasks of the application.</p>
@@ -82,5 +87,13 @@ public class Task {
 
     public long getCreationTimestamp() {
         return creationTimestamp;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task that = (Task) o;
+        return projectId == that.projectId && creationTimestamp == that.creationTimestamp && name.equals(that.name);
     }
 }

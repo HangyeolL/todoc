@@ -95,8 +95,6 @@ public class AddTaskDialogFragmentViewModel extends ViewModel {
                             new Date().getTime()
                     )
             ));
-        } else {
-            //TODO : toast message to inform that user cant create to do
         }
     }
 

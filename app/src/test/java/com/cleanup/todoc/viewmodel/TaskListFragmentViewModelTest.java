@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskViewModelTest {
+public class TaskListFragmentViewModelTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -169,6 +169,22 @@ public class TaskViewModelTest {
             result
         );
     }
+
+    @Test
+    public void onDeleteTask() {
+        //Given
+        long taskId = 1;
+
+        //When
+        mTaskViewModel.onDeleteTask(taskId);
+
+        //Then
+        Mockito.verify(mTaskRepository).deleteTaskById(taskId);
+    }
+
+    /**
+     * Inputs
+     */
 
     public List<Project> getProjectList() {
         final List<Project> taskList = new ArrayList<>();
