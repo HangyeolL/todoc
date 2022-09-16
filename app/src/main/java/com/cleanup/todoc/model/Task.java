@@ -27,7 +27,7 @@ public class Task {
      * The unique identifier of the task
      */
     @PrimaryKey(autoGenerate = true)
-    private final long id;
+    private long id;
 
     /**
      * The unique identifier of the project associated to the task
@@ -43,7 +43,7 @@ public class Task {
     /**
      * The timestamp when the task has been created
      */
-    private final long creationTimestamp;
+    private  long creationTimestamp;
 
     /**
      * Instantiates a new Task.
@@ -51,6 +51,7 @@ public class Task {
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
      */
+
     @Ignore
     public Task(long projectId, @NonNull String name, long creationTimestamp) {
         this(0, projectId, name, creationTimestamp);
@@ -62,6 +63,13 @@ public class Task {
         this.projectId = projectId;
         this.name = name;
         this.creationTimestamp = creationTimestamp;
+    }
+
+    @VisibleForTesting
+    @Ignore
+    public Task(long projectId, String name) {
+        this.projectId = projectId;
+        this.name = name;
     }
 
     /**

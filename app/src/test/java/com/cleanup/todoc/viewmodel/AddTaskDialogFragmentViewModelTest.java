@@ -90,7 +90,7 @@ public class AddTaskDialogFragmentViewModelTest {
         mViewModel.onAddTaskButtonClick();
 
         //Then
-        Mockito.verify(mTaskRepository).insertTask(new Task(selectedProjectId, taskDescription, new Date().getTime()));
+        Mockito.verify(mTaskRepository).insertTask(new Task(selectedProjectId, taskDescription));
     }
 
     /**
