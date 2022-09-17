@@ -36,9 +36,9 @@ public class TaskListFragmentViewModelTest {
     private static final Project PROJECT1 = new Project(1, "project1", 1);
     private static final Project PROJECT2 = new Project(2, "project2", 2);
 
-    private static final Task TASK0 = new Task(0, 2, "task0", 122);
-    private static final Task TASK1 = new Task(1, 1, "task1", 123);
-    private static final Task TASK2 = new Task(2, 0, "task2", 124);
+    private static final Task TASK0 = new Task(0, 2, "task0");
+    private static final Task TASK1 = new Task(1, 1, "task1");
+    private static final Task TASK2 = new Task(2, 0, "task2");
 
     private final MutableLiveData<List<Project>> projectsMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Task>> tasksMutableLiveData = new MutableLiveData<>();

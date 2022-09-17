@@ -32,7 +32,7 @@ public class TaskComparator {
     public static class TaskRecentComparator implements Comparator<Task> {
         @Override
         public int compare(Task left, Task right) {
-            return (int) (right.getCreationTimestamp() - left.getCreationTimestamp());
+            return (int) (right.getId() - left.getId());
         }
     }
 
@@ -42,7 +42,7 @@ public class TaskComparator {
     public static class TaskOldComparator implements Comparator<Task> {
         @Override
         public int compare(Task left, Task right) {
-            return (int) (left.getCreationTimestamp() - right.getCreationTimestamp());
+            return (int) (left.getId() - right.getId());
         }
     }
 }

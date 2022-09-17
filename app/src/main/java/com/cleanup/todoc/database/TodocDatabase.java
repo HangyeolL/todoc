@@ -56,43 +56,37 @@ public abstract class TodocDatabase extends RoomDatabase {
                     INSTANCE.getTaskDao().insertTask(
                         new Task(
                             1,
-                            "A Nino",
-                            new Date().getTime()
+                            "A Nino"
                         )
                     );
                     INSTANCE.getTaskDao().insertTask(
                         new Task(
                             2,
-                            "B Nino",
-                            new Date().getTime()
+                            "B Nino"
                         )
                     );
                     INSTANCE.getTaskDao().insertTask(
                         new Task(
                             3,
-                            "C Nino",
-                            new Date().getTime()
+                            "C Nino"
                         )
                     );
                     INSTANCE.getTaskDao().insertTask(
                         new Task(
                             2,
-                            "D Nino",
-                            new Date().getTime()
+                            "D Nino"
                         )
                     );
                     INSTANCE.getTaskDao().insertTask(
                         new Task(
                             1,
-                            "E Nino",
-                            new Date().getTime()
+                            "E Nino"
                         )
                     );
                     INSTANCE.getTaskDao().insertTask(
                         new Task(
                             2,
-                            "F Nino",
-                            new Date().getTime()
+                            "F Nino"
                         )
                     );
                 });

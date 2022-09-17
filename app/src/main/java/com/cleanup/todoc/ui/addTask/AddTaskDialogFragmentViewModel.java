@@ -90,9 +90,9 @@ public class AddTaskDialogFragmentViewModel extends ViewModel {
     public void onAddTaskButtonClick() {
         if (projectId != null && taskName != null && !taskName.isEmpty()) {
             executor.execute(() -> taskRepository.insertTask(
-                    new Task(projectId,
-                            taskName,
-                            new Date().getTime()
+                    new Task(
+                        projectId,
+                        taskName
                     )
             ));
         }

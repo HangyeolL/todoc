@@ -27,7 +27,7 @@ public class Task {
      * The unique identifier of the task
      */
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private final long id;
 
     /**
      * The unique identifier of the project associated to the task
@@ -41,33 +41,19 @@ public class Task {
     private final String name;
 
     /**
-     * The timestamp when the task has been created
-     */
-    private  long creationTimestamp;
-
-    /**
      * Instantiates a new Task.
      * @param projectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
-     * @param creationTimestamp the timestamp when the task has been created to set
      */
 
     @Ignore
-    public Task(long projectId, @NonNull String name, long creationTimestamp) {
-        this(0, projectId, name, creationTimestamp);
+    public Task(long projectId, @NonNull String name) {
+        this(0, projectId, name);
     }
 
     @VisibleForTesting
-    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
+    public Task(long id, long projectId, @NonNull String name) {
         this.id = id;
-        this.projectId = projectId;
-        this.name = name;
-        this.creationTimestamp = creationTimestamp;
-    }
-
-    @VisibleForTesting
-    @Ignore
-    public Task(long projectId, String name) {
         this.projectId = projectId;
         this.name = name;
     }
@@ -93,15 +79,26 @@ public class Task {
         return name;
     }
 
-    public long getCreationTimestamp() {
-        return creationTimestamp;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && projectId == task.projectId && Objects.equals(name, task.name);
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task that = (Task) o;
-        return projectId == that.projectId && creationTimestamp == that.creationTimestamp && name.equals(that.name);
+    public int hashCode() {
+        return Objects.hash(id, projectId, name);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Task{" +
+            "id=" + id +
+            ", projectId=" + projectId +
+            ", name='" + name + '\'' +
+            '}';
     }
 }
