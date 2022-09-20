@@ -77,10 +77,6 @@ public class AddTaskDialogFragment extends DialogFragment {
             }
         });
 
-//                projectArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.add_task_project_spinner_item, R.id.textView, projectList);
-//                projectArrayAdapter.setDropDownViewResource(R.layout.add_task_project_spinner_item);
-//                binding.projectSpinner.setAdapter(projectArrayAdapter);
-
         binding.buttonOk.setOnClickListener(listener -> {
             mViewModel.onAddTaskButtonClick();
             dismiss();

@@ -36,38 +36,4 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.D
     public void displayAddTaskDialog() {
         AddTaskDialogFragment.newInstance().show(getSupportFragmentManager(), null);
     }
-
-//    private void showAddTaskDialog() {
-//        FragmentDialogAddTaskBinding dialogAddTaskBinding = FragmentDialogAddTaskBinding.inflate(LayoutInflater.from(this));
-//        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.Dialog);
-//
-//        alertBuilder.setTitle(R.string.add_task);
-//        alertBuilder.setView(dialogAddTaskBinding.getRoot());
-//
-//        alertBuilder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                mTaskViewModel.onAddTaskButtonClick((Project) dialogAddTaskBinding.projectSpinner.getSelectedItem(), dialogAddTaskBinding.txtTaskName.getText().toString());
-//                dialog.dismiss();
-//            }
-//        });
-//        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//        alertBuilder.create().show();
-//
-//        mTaskViewModel.getAllProject().observe(this, new Observer<List<Project>>() {
-//            @Override
-//            public void onChanged(List<Project> projectList) {
-//                final ArrayAdapter<Project> spinnerAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, projectList);
-//                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                dialogAddTaskBinding.projectSpinner.setAdapter(spinnerAdapter);
-//
-//            }
-//        });
-//    }
-
 }
