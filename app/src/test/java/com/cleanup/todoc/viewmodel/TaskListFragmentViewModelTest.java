@@ -171,6 +171,24 @@ public class TaskListFragmentViewModelTest {
     }
 
     @Test
+    public void case_empty_projects() {
+        // Given
+        projectsMutableLiveData.setValue(new ArrayList<>());
+
+        // When
+        LiveData<List<TasksViewStates>> liveData = mTaskViewModel.getTasksViewStateLiveData();
+        liveData.observeForever(tasksViewStates -> {
+        });
+        List<TasksViewStates> result = liveData.getValue();
+
+        // Then
+        assertEquals(
+            new ArrayList<>(),
+            result
+        );
+    }
+
+    @Test
     public void onDeleteTask() {
         //Given
         long taskId = 1;

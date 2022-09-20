@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
@@ -14,17 +13,14 @@ import com.cleanup.todoc.repository.TaskRepository;
 import com.cleanup.todoc.ui.addTask.AddTaskDialogFragmentViewModel;
 import com.cleanup.todoc.ui.addTask.AddTaskDialogFragmentViewState;
 import com.cleanup.todoc.ui.addTask.AddTaskProjectSpinnerItemViewState;
-import com.cleanup.todoc.ui.task.TasksViewStates;
 import com.cleanup.todoc.utils.TestExecutor;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AddTaskDialogFragmentViewModelTest {
@@ -58,7 +54,7 @@ public class AddTaskDialogFragmentViewModelTest {
 
     @Test
     public void nominal_case() {
-        //Given
+        // When
         LiveData<AddTaskDialogFragmentViewState> liveData = mViewModel.getViewStateMediatorLiveData();
         liveData.observeForever(addTaskDialogFragmentViewState -> {
         });
@@ -73,8 +69,28 @@ public class AddTaskDialogFragmentViewModelTest {
         AddTaskDialogFragmentViewState expected = new AddTaskDialogFragmentViewState(list, false);
 
         assertEquals(
-                result,
-                expected
+            expected,
+            result
+        );
+    }
+
+    @Test
+    public void initial_case() {
+        // Given
+        projectListMutableLiveData.setValue(null);
+
+        // When
+        LiveData<AddTaskDialogFragmentViewState> liveData = mViewModel.getViewStateMediatorLiveData();
+        liveData.observeForever(addTaskDialogFragmentViewState -> {
+        });
+        AddTaskDialogFragmentViewState result = liveData.getValue();
+
+        //Then
+        AddTaskDialogFragmentViewState expected = new AddTaskDialogFragmentViewState(new ArrayList<>(), true);
+
+        assertEquals(
+            expected,
+            result
         );
     }
 
@@ -91,6 +107,7 @@ public class AddTaskDialogFragmentViewModelTest {
 
         //Then
         Mockito.verify(mTaskRepository).insertTask(new Task(selectedProjectId, taskDescription));
+        Mockito.verifyNoMoreInteractions(mTaskRepository);
     }
 
     /**
